@@ -1,0 +1,143 @@
+@model Document
+
+@{
+    ViewData["Title"] = "Document Details";
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/documents">Documents</sl-breadcrumb-item>
+        <sl-breadcrumb-item>@Model.Title</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>@Model.Title</h2>
+    <sl-badge variant="neutral" pill style="font-size: 16px; padding: 8px 16px;">
+        @Model.Subtype
+    </sl-badge>
+</div>
+
+<sl-card style="margin-bottom: 20px;">
+    <div slot="header">
+        <strong>Document Information</strong>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 200px 1fr; gap: 15px; padding: 10px 0;">
+        <div style="font-weight: 600;">Title:</div>
+        <div>@Model.Title</div>
+        
+        <div style="font-weight: 600;">Type:</div>
+        <div>@Model.Subtype</div>
+        
+        @if (!string.IsNullOrEmpty(Model.SeriesName))
+        {
+            <div style="font-weight: 600;">Series:</div>
+            <div>
+                @Model.SeriesName
+                @if (Model.BookNumber.HasValue)
+                {
+                    <span> (Book @Model.BookNumber)</span>
+                }
+            </div>
+        }
+        
+        <div style="font-weight: 600;">Created:</div>
+        <div>@Model.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</div>
+        
+        <div style="font-weight: 600;">Document ID:</div>
+        <div style="font-family: monospace; font-size: 13px; color: #666;">@Model.DocumentId</div>
+    </div>
+</sl-card>
+
+<sl-card>
+    <div slot="header">
+        <strong>Versions</strong>
+        <sl-badge variant="primary" pill style="margin-left: 10px;">
+            @Model.Versions.Count
+        </sl-badge>
+    </div>
+    
+    @if (!Model.Versions.Any())
+    {
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <sl-icon name="inbox" style="font-size: 48px; margin-bottom: 15px;"></sl-icon>
+            <p>No versions yet. Upload content to create the first version.</p>
+        </div>
+    }
+    else
+    {
+        <sl-details-group>
+            @foreach (var version in Model.Versions.OrderByDescending(v => v.CreatedAt))
+            {
+                <sl-details>
+                    <div slot="summary" style="display: flex; align-items: center; gap: 15px;">
+                        <sl-icon name="file-earmark-code" style="font-size: 20px; color: #667eea;"></sl-icon>
+                        <div style="flex: 1;">
+                            <strong>Version from @version.CreatedAt.ToString("MMM d, yyyy 'at' h:mm tt")</strong>
+                        </div>
+                        <sl-badge variant="neutral" pill>
+                            @version.Segments.Count @(version.Segments.Count == 1 ? "Segment" : "Segments")
+                        </sl-badge>
+                    </div>
+                    
+                    <div style="padding: 15px; background: #f8fafc; border-radius: 6px; margin-top: 10px;">
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 10px; margin-bottom: 15px;">
+                            <div style="font-weight: 600;">Version ID:</div>
+                            <div style="font-family: monospace; font-size: 12px; color: #666;">@version.VersionId</div>
+                            
+                            <div style="font-weight: 600;">Ingest Hash:</div>
+                            <div style="font-family: monospace; font-size: 12px; color: #666;">@version.IngestHash</div>
+                            
+                            <div style="font-weight: 600;">Segments:</div>
+                            <div>@version.Segments.Count</div>
+                            
+                            <div style="font-weight: 600;">Raw Text Size:</div>
+                            <div>@((version.RawText.Length / 1024.0).ToString("N2")) KB</div>
+                        </div>
+                        
+                        @if (version.Segments.Any())
+                        {
+                            <div style="margin-top: 15px;">
+                                <strong>Segments Preview:</strong>
+                                <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                                @{
+                                    var segmentsToShow = version.Segments.Where(s => s.Ordinal <= 4).OrderBy(s => s.Ordinal).ToList();
+                                }
+                                @foreach (var segment in segmentsToShow)
+                                    {
+                                        <div style="padding: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 4px; margin-bottom: 5px;">
+                                            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">
+                                                <strong>Segment @segment.Ordinal</strong>
+                                                @if (!string.IsNullOrEmpty(segment.ChapterLabel))
+                                                {
+                                                    <span> - @segment.ChapterLabel</span>
+                                                }
+                                            </div>
+                                            <div style="font-size: 13px;">
+                                                @(segment.Text.Length > 100 ? segment.Text.Substring(0, 100) + "..." : segment.Text)
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (version.Segments.Count > 5)
+                                    {
+                                        <div style="font-size: 13px; color: #666; text-align: center; padding: 8px;">
+                                            ... and @(version.Segments.Count - 5) more segments
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </sl-details>
+            }
+        </sl-details-group>
+    }
+</sl-card>
+
+<div style="margin-top: 30px;">
+    <sl-button href="/documents" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Documents
+    </sl-button>
+</div>
