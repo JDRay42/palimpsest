@@ -212,8 +212,19 @@
             fileInfo.style.display = 'none';
         });
 
-        // Form submit with loading state
+        // Form submit with validation and loading state
         uploadForm.addEventListener('submit', function(e) {
+            // Ensure a file is selected before allowing submission
+            if (!fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+
+                // Trigger native validation UI if available
+                if (typeof uploadForm.reportValidity === 'function') {
+                    uploadForm.reportValidity();
+                }
+
+                return;
+            }
             submitBtn.loading = true;
             submitBtn.disabled = true;
         });
