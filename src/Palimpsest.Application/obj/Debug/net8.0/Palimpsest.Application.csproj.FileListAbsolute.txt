@@ -1,0 +1,16 @@
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/bin/Debug/net8.0/Palimpsest.Application.deps.json
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/bin/Debug/net8.0/Palimpsest.Application.dll
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/bin/Debug/net8.0/Palimpsest.Application.pdb
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/bin/Debug/net8.0/Palimpsest.Domain.dll
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/bin/Debug/net8.0/Palimpsest.Domain.pdb
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.csproj.AssemblyReference.cache
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.AssemblyInfoInputs.cache
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.AssemblyInfo.cs
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.csproj.CoreCompileInputs.cache
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.sourcelink.json
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpse.B85B574E.Up2Date
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.dll
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/refint/Palimpsest.Application.dll
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/Palimpsest.Application.pdb
+/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/Debug/net8.0/ref/Palimpsest.Application.dll
