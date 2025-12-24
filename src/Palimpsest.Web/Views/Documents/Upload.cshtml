@@ -178,7 +178,9 @@
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                fileInput.files = files;
+                const dt = new DataTransfer();
+                dt.items.add(files[0]);
+                fileInput.files = dt.files;
                 displayFileInfo(files[0]);
             }
         });
@@ -217,7 +219,3 @@
         });
     });
 </script>
-
-@section Scripts {
-    <script src="https://unpkg.com/@@microsoft/signalr@latest/dist/browser/signalr.js"></script>
-}
