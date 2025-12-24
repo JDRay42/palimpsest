@@ -1,17 +1,17 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Domain", "src\Palimpsest.Domain\Palimpsest.Domain.csproj", "{50E6CFA8-11FB-437D-BC2B-1BA227853007}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Domain", "Palimpsest.Domain\Palimpsest.Domain.csproj", "{50E6CFA8-11FB-437D-BC2B-1BA227853007}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Application", "src\Palimpsest.Application\Palimpsest.Application.csproj", "{1A54592B-852C-4288-AE5D-79E934C0713D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Application", "Palimpsest.Application\Palimpsest.Application.csproj", "{1A54592B-852C-4288-AE5D-79E934C0713D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Infrastructure", "src\Palimpsest.Infrastructure\Palimpsest.Infrastructure.csproj", "{BC57814B-38FF-4A0F-81DA-828279151503}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Infrastructure", "Palimpsest.Infrastructure\Palimpsest.Infrastructure.csproj", "{BC57814B-38FF-4A0F-81DA-828279151503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Web", "src\Palimpsest.Web\Palimpsest.Web.csproj", "{E75D437C-AEED-412A-B2A7-61F58C39A8A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Palimpsest.Web", "Palimpsest.Web\Palimpsest.Web.csproj", "{E75D437C-AEED-412A-B2A7-61F58C39A8A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
