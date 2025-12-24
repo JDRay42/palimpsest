@@ -101,7 +101,10 @@
                             <div style="margin-top: 15px;">
                                 <strong>Segments Preview:</strong>
                                 <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
-                                    @foreach (var segment in version.Segments.OrderBy(s => s.Ordinal).Take(5))
+                                @{
+                                    var segmentsToShow = version.Segments.Where(s => s.Ordinal <= 4).OrderBy(s => s.Ordinal).ToList();
+                                }
+                                @foreach (var segment in segmentsToShow)
                                     {
                                         <div style="padding: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 4px; margin-bottom: 5px;">
                                             <div style="font-size: 12px; color: #666; margin-bottom: 5px;">

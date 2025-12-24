@@ -98,13 +98,15 @@ else
 }
 
 <script>
-    // Auto-close alerts after 5 seconds
+    // Auto-close alerts after configurable timeout
+    const ALERT_TIMEOUT_MS = 8000; // Increased to 8 seconds for better accessibility
+    
     document.addEventListener('DOMContentLoaded', function() {
         const alerts = document.querySelectorAll('sl-alert[open]');
         alerts.forEach(alert => {
             setTimeout(() => {
                 alert.hide();
-            }, 5000);
+            }, ALERT_TIMEOUT_MS);
         });
     });
 </script>

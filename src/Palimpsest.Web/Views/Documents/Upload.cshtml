@@ -38,7 +38,9 @@
                 <sl-option value="Outline">Outline</sl-option>
                 <sl-option value="Appendix">Appendix</sl-option>
             </sl-select>
-            <sl-icon-button name="info-circle" label="Info" style="margin-left: 10px;"></sl-icon-button>
+            <sl-tooltip content="Choose the type that best describes this document.">
+                <sl-icon-button name="info-circle" label="Info" style="margin-left: 10px;"></sl-icon-button>
+            </sl-tooltip>
             <div style="font-size: 13px; color: #666; margin-top: 5px;">
                 Choose the type that best describes this document
             </div>
@@ -81,7 +83,7 @@
                 Supported formats: .txt, .md (max 10MB)
             </div>
             
-            <div id="dropZone" style="
+            <div id="dropZone" role="button" tabindex="0" aria-label="Drop file here or press Enter to browse" style="
                 border: 2px dashed #cbd5e0;
                 border-radius: 8px;
                 padding: 40px;
@@ -120,15 +122,12 @@
         
         <div style="margin-bottom: 25px; padding: 15px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 6px;">
             <div style="display: flex; align-items: start; gap: 10px;">
-                <sl-checkbox id="startIngestion" name="startIngestion" value="true" style="margin-top: 2px;"></sl-checkbox>
-                <div>
-                    <label for="startIngestion" style="cursor: pointer; font-weight: 600;">
-                        Start ingestion immediately
-                    </label>
-                    <div style="font-size: 13px; color: #666; margin-top: 5px;">
-                        Automatically process this document to extract entities, assertions, and relationships. 
-                        This may take several minutes depending on document size.
-                    </div>
+                <sl-checkbox id="startIngestion" name="startIngestion" value="true" style="margin-top: 2px; cursor: pointer; font-weight: 600;">
+                    Start ingestion immediately
+                </sl-checkbox>
+                <div style="font-size: 13px; color: #666; margin-top: 5px;">
+                    Automatically process this document to extract entities, assertions, and relationships. 
+                    This may take several minutes depending on document size.
                 </div>
             </div>
         </div>
@@ -147,6 +146,11 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const KB_TO_BYTES = 1024;
+        const MB_TO_BYTES = 1024 * 1024;
+        const MAX_FILE_SIZE_MB = 10;
+        const ALLOWED_EXTENSIONS = ['.txt', '.md'];
+        
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('file');
         const fileInfo = document.getElementById('fileInfo');
@@ -156,8 +160,38 @@
         const uploadForm = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Click to browse
-        dropZone.addEventListener('click', () => fileInput.click());
+        // Validate file before displaying
+        function validateFile(file) {
+            const ext = '.' + file.name.split('.').pop().toLowerCase();
+            if (!ALLOWED_EXTENSIONS.includes(ext)) {
+                alert('Only .txt and .md files are supported.');
+                return false;
+            }
+            if (file.size > MAX_FILE_SIZE_MB * MB_TO_BYTES) {
+                alert('File size must not exceed 10MB.');
+                return false;
+            }
+            return true;
+        }
+
+        // Click to browse (only when file info is not visible)
+        dropZone.addEventListener('click', (event) => {
+            const isFileInfoVisible = window.getComputedStyle(fileInfo).display !== 'none';
+            if (!isFileInfoVisible) {
+                fileInput.click();
+            }
+        });
+
+        // Keyboard navigation support for drop zone
+        dropZone.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const isFileInfoVisible = window.getComputedStyle(fileInfo).display !== 'none';
+                if (!isFileInfoVisible) {
+                    fileInput.click();
+                }
+            }
+        });
 
         // Drag and drop handlers
         dropZone.addEventListener('dragover', (e) => {
@@ -178,25 +212,43 @@
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                const dt = new DataTransfer();
-                dt.items.add(files[0]);
-                fileInput.files = dt.files;
-                displayFileInfo(files[0]);
+                const file = files[0];
+                if (!validateFile(file)) {
+                    return;
+                }
+                
+                // Set the file input's files with better browser compatibility
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    fileInput.files = dt.files;
+                } catch (err) {
+                    // Fallback for browsers that don't support DataTransfer
+                    console.warn('DataTransfer not supported, file input may not be set correctly');
+                }
+                
+                displayFileInfo(file);
             }
         });
 
         // File input change
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                displayFileInfo(e.target.files[0]);
+                const file = e.target.files[0];
+                if (validateFile(file)) {
+                    displayFileInfo(file);
+                } else {
+                    // Clear the file input if validation fails
+                    fileInput.value = '';
+                }
             }
         });
 
         // Display file info
         function displayFileInfo(file) {
-            const sizeKB = (file.size / 1024).toFixed(2);
-            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-            const sizeDisplay = file.size > 1024 * 1024 ? `${sizeMB} MB` : `${sizeKB} KB`;
+            const sizeKB = (file.size / KB_TO_BYTES).toFixed(2);
+            const sizeMB = (file.size / MB_TO_BYTES).toFixed(2);
+            const sizeDisplay = file.size > MB_TO_BYTES ? `${sizeMB} MB` : `${sizeKB} KB`;
             
             fileName.textContent = file.name;
             fileSize.textContent = sizeDisplay;

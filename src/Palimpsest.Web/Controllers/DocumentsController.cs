@@ -168,7 +168,20 @@ public class DocumentsController : Controller
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error starting ingestion for document {DocumentId}", document.DocumentId);
-                    TempData["Warning"] = $"Document '{title}' uploaded, but ingestion failed to start: {ex.Message}";
+                    
+                    // Roll back the created document to avoid leaving an orphaned document without content
+                    try
+                    {
+                        await _documentRepository.DeleteAsync(document.DocumentId);
+                        _logger.LogInformation("Rolled back document {DocumentId} after ingestion failure.", document.DocumentId);
+                    }
+                    catch (Exception rollbackEx)
+                    {
+                        _logger.LogError(rollbackEx, "Failed to roll back document {DocumentId} after ingestion failure.", document.DocumentId);
+                    }
+                    
+                    TempData["Error"] = $"Failed to upload document '{title}' because ingestion could not be started. Please try again.";
+                    return View();
                 }
             }
             else
@@ -181,7 +194,7 @@ public class DocumentsController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error uploading document");
-            ModelState.AddModelError(string.Empty, $"An error occurred while uploading the document: {ex.Message}");
+            ModelState.AddModelError(string.Empty, "An unexpected error occurred while uploading the document. Please try again later.");
             return View();
         }
     }
