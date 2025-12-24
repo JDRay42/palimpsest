@@ -1,0 +1,67 @@
+@model Universe
+
+@{
+    ViewData["Title"] = "Create Universe";
+}
+
+<h2>Create Universe</h2>
+
+<sl-card style="max-width: 600px; margin: 20px 0;">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        
+        <div style="margin-bottom: 20px;">
+            <label for="name">
+                <strong>Universe Name</strong>
+                <span style="color: red;">*</span>
+            </label>
+            <sl-input 
+                id="name" 
+                name="Name" 
+                placeholder="e.g., The Evermore Saga" 
+                required 
+                style="margin-top: 5px;">
+            </sl-input>
+            <span asp-validation-for="Name" style="color: red; font-size: 14px;"></span>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="authorName">
+                <strong>Author Name</strong>
+            </label>
+            <sl-input 
+                id="authorName" 
+                name="AuthorName" 
+                placeholder="Your name or pseudonym"
+                style="margin-top: 5px;">
+            </sl-input>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="description">
+                <strong>Description</strong>
+            </label>
+            <sl-textarea 
+                id="description" 
+                name="Description" 
+                placeholder="A brief description of your fictional universe..."
+                rows="4"
+                style="margin-top: 5px;">
+            </sl-textarea>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <sl-button type="submit" variant="primary">
+                <sl-icon slot="prefix" name="plus-circle"></sl-icon>
+                Create Universe
+            </sl-button>
+            <sl-button href="/universes" variant="default">
+                Cancel
+            </sl-button>
+        </div>
+    </form>
+</sl-card>
+
+@section Scripts {
+    <script src="https://unpkg.com/@@microsoft/signalr@latest/dist/browser/signalr.js"></script>
+}
