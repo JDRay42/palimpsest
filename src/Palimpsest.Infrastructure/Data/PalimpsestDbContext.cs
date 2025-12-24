@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Palimpsest.Domain.Entities;
 using Palimpsest.Domain.Enums;
+using Pgvector;
 
 namespace Palimpsest.Infrastructure.Data;
 
@@ -225,10 +226,13 @@ public class PalimpsestDbContext : DbContext
             entity.Property(e => e.SegmentId)
                 .HasColumnName("segment_id");
             
+            // Configure vector property with conversion
             entity.Property(e => e.Embedding)
                 .HasColumnName("embedding")
-                .HasColumnType("vector(384)") // Default dimension, can be configured
-                .IsRequired();
+                .HasColumnType("vector(384)")
+                .HasConversion(
+                    v => v == null ? null : new Vector(v),
+                    v => v == null ? null : v.ToArray());
             
             entity.Property(e => e.Model)
                 .HasColumnName("model")

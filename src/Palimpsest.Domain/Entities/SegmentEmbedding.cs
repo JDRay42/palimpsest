@@ -7,7 +7,8 @@ namespace Palimpsest.Domain.Entities;
 public class SegmentEmbedding
 {
     public Guid SegmentId { get; set; }
-    public float[] Embedding { get; set; } = Array.Empty<float>();
+    // Using float[] for now; will be mapped to pgvector in Infrastructure
+    public float[]? Embedding { get; set; }
     public string Model { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     
