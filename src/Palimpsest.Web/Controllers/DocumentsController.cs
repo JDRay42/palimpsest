@@ -19,6 +19,10 @@ public class DocumentsController : Controller
     /// <summary>
     /// Initializes a new instance of the <see cref="DocumentsController"/> class.
     /// </summary>
+    /// <param name="documentRepository">The document repository.</param>
+    /// <param name="universeContext">The universe context service.</param>
+    /// <param name="ingestionService">The ingestion service.</param>
+    /// <param name="logger">The logger.</param>
     public DocumentsController(
         IDocumentRepository documentRepository,
         IUniverseContextService universeContext,
