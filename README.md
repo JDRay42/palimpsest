@@ -133,10 +133,10 @@ palimpsest/
 │   ├── Palimpsest.Domain/         # Core domain entities and enums
 │   ├── Palimpsest.Application/    # Use cases and interfaces
 │   ├── Palimpsest.Infrastructure/ # Database, repositories, services
-│   └── Palimpsest.Web/            # ASP.NET Core web application
+│   ├── Palimpsest.Web/            # ASP.NET Core web application
+│   └── Palimpsest.sln             # Solution file
 ├── docs/                          # Documentation
-├── docker-compose.yml             # PostgreSQL with pgvector
-└── Palimpsest.sln                 # Solution file
+└── docker-compose.yml             # PostgreSQL with pgvector
 ```
 
 ### Building the Solution
