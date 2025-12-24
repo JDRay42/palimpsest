@@ -73,7 +73,7 @@ Palimpsest follows **Clean Architecture** principles:
 
 5. **Open your browser**
 
-   Navigate to `https://localhost:7131` or `http://localhost:5097`
+   Navigate to `https://localhost:7131` or `http://localhost:7130`
 
 ### Configuration
 
