@@ -1,0 +1,73 @@
+@model IEnumerable<Universe>
+
+@{
+    ViewData["Title"] = "Universes";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Universes</h2>
+    <sl-button href="/universes/create" variant="primary">
+        <sl-icon slot="prefix" name="plus-circle"></sl-icon>
+        Create Universe
+    </sl-button>
+</div>
+
+@if (!Model.Any())
+{
+    <sl-card style="margin: 40px 0;">
+        <div style="text-align: center; padding: 40px;">
+            <sl-icon name="globe" style="font-size: 64px; color: #667eea; margin-bottom: 20px;"></sl-icon>
+            <h3>No Universes Yet</h3>
+            <p>Create your first universe to start building your canon-aware knowledge base.</p>
+            <sl-button href="/universes/create" variant="primary" style="margin-top: 20px;">
+                Create Your First Universe
+            </sl-button>
+        </div>
+    </sl-card>
+}
+else
+{
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+        @foreach (var universe in Model)
+        {
+            var isActive = ViewBag.ActiveUniverseId != null && ViewBag.ActiveUniverseId.Equals(universe.UniverseId);
+            
+            <sl-card style="@(isActive ? "border: 2px solid #667eea;" : "")">
+                <div slot="header">
+                    <strong>@universe.Name</strong>
+                    @if (isActive)
+                    {
+                        <sl-badge variant="primary" pill style="margin-left: 10px;">Active</sl-badge>
+                    }
+                </div>
+                
+                @if (!string.IsNullOrEmpty(universe.Description))
+                {
+                    <p>@universe.Description</p>
+                }
+                
+                @if (!string.IsNullOrEmpty(universe.AuthorName))
+                {
+                    <p><small><strong>Author:</strong> @universe.AuthorName</small></p>
+                }
+                
+                <p><small><strong>Created:</strong> @universe.CreatedAt.ToString("MMM d, yyyy")</small></p>
+                
+                <div slot="footer" style="display: flex; gap: 10px;">
+                    @if (!isActive)
+                    {
+                        <form method="post" asp-action="SetActive" asp-route-id="@universe.UniverseId" style="flex: 1;">
+                            @Html.AntiForgeryToken()
+                            <sl-button type="submit" variant="primary" outline style="width: 100%;">
+                                Set Active
+                            </sl-button>
+                        </form>
+                    }
+                    <sl-button href="/universes/details/@universe.UniverseId" variant="default" outline>
+                        Details
+                    </sl-button>
+                </div>
+            </sl-card>
+        }
+    </div>
+}
