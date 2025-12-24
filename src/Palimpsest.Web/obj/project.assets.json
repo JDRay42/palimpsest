@@ -2465,7 +2465,7 @@
     ]
   },
   "packageFolders": {
-    "/home/runner/.nuget/packages/": {}
+    "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages": {}
   },
   "project": {
     "version": "1.0.0",
@@ -2473,7 +2473,7 @@
       "projectUniqueName": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
       "projectName": "Palimpsest.Web",
       "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
-      "packagesPath": "/home/runner/.nuget/packages/",
+      "packagesPath": "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages",
       "outputPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
@@ -2532,6 +2532,20 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.linux-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
