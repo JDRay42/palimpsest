@@ -35,6 +35,19 @@ public class EntityRepository : IEntityRepository
             .FirstOrDefaultAsync(e => e.UniverseId == universeId && e.CanonicalName == canonicalName, cancellationToken);
     }
 
+    public async Task<IEnumerable<Entity>> SearchByNameAsync(Guid universeId, string query, CancellationToken cancellationToken = default)
+    {
+        var normalizedQuery = query.ToLower();
+        return await _context.Entities
+            .Where(e => e.UniverseId == universeId && 
+                       (e.CanonicalName.ToLower().Contains(normalizedQuery) ||
+                        e.Aliases.Any(a => a.AliasNorm.Contains(normalizedQuery))))
+            .Include(e => e.Aliases)
+            .OrderBy(e => e.CanonicalName)
+            .Take(50)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<Entity> CreateAsync(Entity entity, CancellationToken cancellationToken = default)
     {
         entity.CreatedAt = DateTime.UtcNow;

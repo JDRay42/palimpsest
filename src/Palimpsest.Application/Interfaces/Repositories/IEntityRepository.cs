@@ -33,6 +33,15 @@ public interface IEntityRepository
     Task<Entity?> GetByCanonicalNameAsync(Guid universeId, string canonicalName, CancellationToken cancellationToken = default);
     
     /// <summary>
+    /// Searches for entities by name (partial match) within a universe.
+    /// </summary>
+    /// <param name="universeId">The unique identifier of the universe.</param>
+    /// <param name="query">The search query.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A collection of matching entities.</returns>
+    Task<IEnumerable<Entity>> SearchByNameAsync(Guid universeId, string query, CancellationToken cancellationToken = default);
+    
+    /// <summary>
     /// Creates a new entity.
     /// </summary>
     /// <param name="entity">The entity to create.</param>
