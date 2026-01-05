@@ -72,9 +72,9 @@ else
                     
                     <div style="display: flex; flex-direction: column; gap: 5px;">
                         <sl-badge variant="@(assertion.Epistemic switch {
-                            EpistemicCategory.CanonicalFact => "success",
-                            EpistemicCategory.Speculation => "warning",
-                            EpistemicCategory.Contradiction => "danger",
+                            EpistemicCategory.Observed => "success",
+                            EpistemicCategory.Believed => "warning",
+                            EpistemicCategory.Inferred => "primary",
                             _ => "neutral"
                         })" pill>
                             @assertion.Epistemic

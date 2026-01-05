@@ -18,8 +18,10 @@
     <sl-badge variant="@(Model.EntityType switch {
         EntityType.Person => "primary",
         EntityType.Place => "success",
-        EntityType.Thing => "warning",
+        EntityType.Object => "warning",
+        EntityType.Org => "info",
         EntityType.Concept => "neutral",
+        EntityType.EventLike => "danger",
         _ => "neutral"
     })" pill>
         @Model.EntityType
@@ -63,7 +65,7 @@
                     @foreach (var alias in Model.Aliases)
                     {
                         <sl-card>
-                            <strong>@alias.AliasName</strong>
+                            <strong>@alias.Alias</strong>
                             <p style="margin: 5px 0 0 0; color: #666;">
                                 <small>Created: @alias.CreatedAt.ToString("MMM d, yyyy")</small>
                             </p>

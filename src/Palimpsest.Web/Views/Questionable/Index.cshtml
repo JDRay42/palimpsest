@@ -52,19 +52,17 @@ else
                     <strong>@item.ItemType</strong>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <sl-badge variant="@(item.Severity switch {
-                            Severity.Critical => "danger",
-                            Severity.High => "warning",
-                            Severity.Medium => "primary",
-                            Severity.Low => "neutral",
+                            Severity.Error => "danger",
+                            Severity.Warn => "warning",
+                            Severity.Info => "primary",
                             _ => "neutral"
                         })" pill>
                             @item.Severity
                         </sl-badge>
                         <sl-badge variant="@(item.Status switch {
-                            QuestionableItemStatus.New => "primary",
-                            QuestionableItemStatus.UnderReview => "warning",
-                            QuestionableItemStatus.Resolved => "success",
+                            QuestionableItemStatus.Open => "primary",
                             QuestionableItemStatus.Dismissed => "neutral",
+                            QuestionableItemStatus.Resolved => "success",
                             _ => "neutral"
                         })">
                             @item.Status
@@ -72,14 +70,11 @@ else
                     </div>
                 </div>
                 
-                <p style="margin: 15px 0;">@item.Description</p>
+                <p style="margin: 15px 0;">@item.ItemType - @item.Severity</p>
                 
-                @if (!string.IsNullOrEmpty(item.Notes))
-                {
-                    <p style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-                        <small><strong>Notes:</strong> @item.Notes</small>
-                    </p>
-                }
+                <p style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                    <small>@item.Details</small>
+                </p>
                 
                 <div slot="footer" style="display: flex; justify-content: space-between; align-items: center;">
                     <small style="color: #666;">

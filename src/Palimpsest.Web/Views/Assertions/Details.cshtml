@@ -16,9 +16,9 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
     <h2>Assertion Details</h2>
     <sl-badge variant="@(Model.Epistemic switch {
-        EpistemicCategory.CanonicalFact => "success",
-        EpistemicCategory.Speculation => "warning",
-        EpistemicCategory.Contradiction => "danger",
+        EpistemicCategory.Observed => "success",
+        EpistemicCategory.Believed => "warning",
+        EpistemicCategory.Inferred => "primary",
         _ => "neutral"
     })" pill>
         @Model.Epistemic
@@ -121,14 +121,14 @@
                     <div slot="header">
                         <strong>Source Segment</strong>
                     </div>
-                    <p>@Model.EvidenceSegment.SegmentText</p>
-                    @if (Model.EvidenceSegment.DocumentVersion?.Document != null)
+                    <p>@Model.EvidenceSegment.Text</p>
+                    @if (Model.EvidenceSegment.Version?.Document != null)
                     {
                         <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
                             <small>
                                 <strong>Document:</strong> 
-                                <a href="/documents/details/@Model.EvidenceSegment.DocumentVersion.DocumentId">
-                                    @Model.EvidenceSegment.DocumentVersion.Document.Title
+                                <a href="/documents/details/@Model.EvidenceSegment.Version.DocumentId">
+                                    @Model.EvidenceSegment.Version.Document.Title
                                 </a>
                             </small>
                         </p>

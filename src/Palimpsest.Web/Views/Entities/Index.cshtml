@@ -66,8 +66,10 @@ else
                     <sl-badge variant="@(entity.EntityType switch {
                         EntityType.Person => "primary",
                         EntityType.Place => "success",
-                        EntityType.Thing => "warning",
+                        EntityType.Object => "warning",
+                        EntityType.Org => "info",
                         EntityType.Concept => "neutral",
+                        EntityType.EventLike => "danger",
                         _ => "neutral"
                     })" pill>
                         @entity.EntityType
@@ -77,7 +79,7 @@ else
                 @if (entity.Aliases?.Any() == true)
                 {
                     <p style="margin: 10px 0;">
-                        <small><strong>Aliases:</strong> @string.Join(", ", entity.Aliases.Select(a => a.AliasName))</small>
+                        <small><strong>Aliases:</strong> @string.Join(", ", entity.Aliases.Select(a => a.Alias))</small>
                     </p>
                 }
                 
