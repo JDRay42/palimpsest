@@ -1,0 +1,130 @@
+@model Document
+
+@{
+    ViewData["Title"] = "Add Document";
+}
+
+<h2>Add Document to Universe</h2>
+
+<sl-card style="max-width: 800px; margin: 20px 0;">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        
+        <div style="margin-bottom: 20px;">
+            <label for="title">
+                <strong>Title</strong>
+                <span style="color: red;">*</span>
+            </label>
+            <sl-input 
+                id="title" 
+                name="Title" 
+                placeholder="e.g., Emerald Eyes" 
+                required 
+                style="margin-top: 5px;">
+            </sl-input>
+            <span asp-validation-for="Title" style="color: red; font-size: 14px;"></span>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="subtype">
+                <strong>Document Type</strong>
+            </label>
+            <sl-select 
+                id="subtype" 
+                name="Subtype" 
+                value="Book"
+                style="margin-top: 5px;">
+                <sl-option value="Book">Book</sl-option>
+                <sl-option value="Notes">Notes</sl-option>
+                <sl-option value="Outline">Outline</sl-option>
+                <sl-option value="Appendix">Appendix</sl-option>
+            </sl-select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="seriesName">
+                <strong>Series Name</strong>
+            </label>
+            <sl-input 
+                id="seriesName" 
+                name="SeriesName" 
+                placeholder="Optional: e.g., The Evermore Saga"
+                style="margin-top: 5px;">
+            </sl-input>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="bookNumber">
+                <strong>Book Number</strong>
+            </label>
+            <sl-input 
+                id="bookNumber" 
+                name="BookNumber" 
+                type="number"
+                placeholder="Optional: e.g., 1"
+                style="margin-top: 5px;">
+            </sl-input>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="tags">
+                <strong>Tags</strong>
+            </label>
+            <sl-input 
+                id="tags" 
+                name="Tags" 
+                placeholder="Optional: comma-separated tags"
+                help-text="e.g., fantasy, time-travel, draft"
+                style="margin-top: 5px;">
+            </sl-input>
+        </div>
+
+        <sl-divider style="margin: 30px 0;"></sl-divider>
+
+        <h3>Content</h3>
+        <p style="color: #666; margin-bottom: 20px;">
+            Upload a text file or paste content directly. If both are provided, the file will be used.
+        </p>
+
+        <div style="margin-bottom: 20px;">
+            <label for="file">
+                <strong>Upload File</strong>
+            </label>
+            <input 
+                type="file" 
+                id="file" 
+                name="file" 
+                accept=".txt,.md"
+                style="display: block; margin-top: 10px; padding: 10px; border: 2px dashed #ccc; border-radius: 5px; width: 100%;">
+            <small style="color: #666;">Supported formats: .txt, .md (Markdown)</small>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="rawText">
+                <strong>Or Paste Text</strong>
+            </label>
+            <sl-textarea 
+                id="rawText" 
+                name="rawText" 
+                placeholder="Paste your document content here..."
+                rows="15"
+                style="margin-top: 5px;">
+            </sl-textarea>
+        </div>
+
+        <sl-alert variant="primary" open style="margin-bottom: 20px;">
+            <sl-icon slot="icon" name="info-circle"></sl-icon>
+            <strong>Note:</strong> After creating the document, ingestion will begin automatically to extract entities and assertions.
+        </sl-alert>
+
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <sl-button type="submit" variant="primary">
+                <sl-icon slot="prefix" name="file-earmark-plus"></sl-icon>
+                Create Document
+            </sl-button>
+            <sl-button href="/universes/details/@ViewContext.RouteData.Values["universeId"]" variant="default">
+                Cancel
+            </sl-button>
+        </div>
+    </form>
+</sl-card>
