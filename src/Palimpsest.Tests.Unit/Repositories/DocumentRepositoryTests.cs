@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Palimpsest.Domain.Entities;
 using Palimpsest.Domain.Enums;
 using Palimpsest.Infrastructure.Data;
@@ -17,6 +18,7 @@ public class DocumentRepositoryTests : IDisposable
     {
         var options = new DbContextOptionsBuilder<PalimpsestDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
             .Options;
 
         _context = new PalimpsestDbContext(options);
