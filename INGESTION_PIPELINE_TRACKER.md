@@ -11,18 +11,19 @@
 
 This tracker documents the implementation of the full document ingestion pipeline as specified in the project spec. The pipeline transforms raw text documents into a structured knowledge graph with entities, assertions, relationships, and conflict detection.
 
-### Current Status: ✅ Phase 1 Complete
+### Current Status: ✅ Phase 2 Complete
 - Document creation working
 - Text normalization implemented
 - Basic segmentation (paragraph-based)
 - Job tracking in place
+- Entity mention detection (capitalization-based)
+- Entity resolution with fuzzy matching
+- QuestionableItem creation for ambiguous entities
 
-### Remaining Work: Phases 2-5
-- Entity mention detection
-- Entity resolution & identity management
+### Remaining Work: Phases 3-5
+- Dossier generation
 - LLM-based assertion extraction
 - Conflict detection & reconciliation
-- Dossier generation
 
 ---
 
