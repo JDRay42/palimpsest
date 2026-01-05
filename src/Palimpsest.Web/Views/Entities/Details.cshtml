@@ -1,0 +1,102 @@
+@using Palimpsest.Domain.Enums
+@model Entity
+
+@{
+    ViewData["Title"] = Model.CanonicalName;
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/universes">Universes</sl-breadcrumb-item>
+        <sl-breadcrumb-item href="/entities">Entities</sl-breadcrumb-item>
+        <sl-breadcrumb-item>@Model.CanonicalName</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>@Model.CanonicalName</h2>
+    <sl-badge variant="@(Model.EntityType switch {
+        EntityType.Person => "primary",
+        EntityType.Place => "success",
+        EntityType.Thing => "warning",
+        EntityType.Concept => "neutral",
+        _ => "neutral"
+    })" pill>
+        @Model.EntityType
+    </sl-badge>
+</div>
+
+<sl-tab-group>
+    <sl-tab slot="nav" panel="overview">Overview</sl-tab>
+    <sl-tab slot="nav" panel="aliases">Aliases</sl-tab>
+    <sl-tab slot="nav" panel="mentions">Mentions</sl-tab>
+    <sl-tab slot="nav" panel="assertions">Related Assertions</sl-tab>
+
+    <sl-tab-panel name="overview">
+        <sl-card style="margin-top: 20px;">
+            <h3>Entity Details</h3>
+            
+            <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; margin-top: 20px;">
+                <dt><strong>Canonical Name</strong></dt>
+                <dd>@Model.CanonicalName</dd>
+                
+                <dt><strong>Type</strong></dt>
+                <dd>@Model.EntityType</dd>
+                
+                <dt><strong>Entity ID</strong></dt>
+                <dd><code style="font-size: 12px;">@Model.EntityId</code></dd>
+                
+                @if (Model.Aliases?.Any() == true)
+                {
+                    <dt><strong>Known Aliases</strong></dt>
+                    <dd>@Model.Aliases.Count() alias(es)</dd>
+                }
+            </dl>
+        </sl-card>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="aliases">
+        <div style="padding: 20px;">
+            @if (Model.Aliases?.Any() == true)
+            {
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                    @foreach (var alias in Model.Aliases)
+                    {
+                        <sl-card>
+                            <strong>@alias.AliasName</strong>
+                            <p style="margin: 5px 0 0 0; color: #666;">
+                                <small>Created: @alias.CreatedAt.ToString("MMM d, yyyy")</small>
+                            </p>
+                        </sl-card>
+                    }
+                </div>
+            }
+            else
+            {
+                <sl-alert variant="warning" open>
+                    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                    No aliases found for this entity.
+                </sl-alert>
+            }
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="mentions">
+        <div style="padding: 20px;">
+            <p>Entity mentions will appear here after document ingestion.</p>
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="assertions">
+        <div style="padding: 20px;">
+            <p>Related assertions will appear here after document ingestion.</p>
+        </div>
+    </sl-tab-panel>
+</sl-tab-group>
+
+<div style="margin-top: 30px;">
+    <sl-button href="/entities" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Entities
+    </sl-button>
+</div>
