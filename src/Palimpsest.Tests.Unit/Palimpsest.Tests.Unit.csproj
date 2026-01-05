@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Palimpsest.Domain\Palimpsest.Domain.csproj" />
     <ProjectReference Include="..\Palimpsest.Application\Palimpsest.Application.csproj" />
     <ProjectReference Include="..\Palimpsest.Infrastructure\Palimpsest.Infrastructure.csproj" />
+    <ProjectReference Include="..\Palimpsest.Web\Palimpsest.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
