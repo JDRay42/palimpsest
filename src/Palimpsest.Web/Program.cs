@@ -33,6 +33,9 @@ builder.Services.AddDbContext<PalimpsestDbContext>(options =>
 builder.Services.AddScoped<IUniverseRepository, UniverseRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IEntityRepository, EntityRepository>();
+builder.Services.AddScoped<IEntityAliasRepository, EntityAliasRepository>();
+builder.Services.AddScoped<IEntityMentionRepository, EntityMentionRepository>();
+builder.Services.AddScoped<IQuestionableItemRepository, QuestionableItemRepository>();
 builder.Services.AddScoped<IAssertionRepository, AssertionRepository>();
 builder.Services.AddScoped<ISegmentRepository, SegmentRepository>();
 builder.Services.AddScoped<IJobRepository, JobRepository>();
@@ -40,6 +43,8 @@ builder.Services.AddScoped<IJobRepository, JobRepository>();
 // Register services
 builder.Services.AddScoped<IUniverseContextService, UniverseContextService>();
 builder.Services.AddScoped<IIngestionService, IngestionService>();
+builder.Services.AddScoped<IEntityMentionService, EntityMentionService>();
+builder.Services.AddScoped<IEntityResolutionService, EntityResolutionService>();
 builder.Services.AddScoped<ILLMProvider, StubLLMProvider>();
 builder.Services.AddScoped<IEmbeddingService, StubEmbeddingService>();
 

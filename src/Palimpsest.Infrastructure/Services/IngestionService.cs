@@ -10,8 +10,8 @@ namespace Palimpsest.Infrastructure.Services;
 
 /// <summary>
 /// Service for document ingestion pipeline.
-/// Handles text normalization, segmentation, and job creation.
-/// Phase 1: No LLM-based entity/assertion extraction yet (stubbed).
+/// Handles text normalization, segmentation, entity mention detection, and entity resolution.
+/// Phase 2: Entity mention detection and resolution integrated.
 /// </summary>
 public class IngestionService : IIngestionService
 {
@@ -19,17 +19,23 @@ public class IngestionService : IIngestionService
     private readonly ISegmentRepository _segmentRepository;
     private readonly IJobRepository _jobRepository;
     private readonly IEmbeddingService _embeddingService;
+    private readonly IEntityMentionService _entityMentionService;
+    private readonly IEntityResolutionService _entityResolutionService;
 
     public IngestionService(
         IDocumentRepository documentRepository,
         ISegmentRepository segmentRepository,
         IJobRepository jobRepository,
-        IEmbeddingService embeddingService)
+        IEmbeddingService embeddingService,
+        IEntityMentionService entityMentionService,
+        IEntityResolutionService entityResolutionService)
     {
         _documentRepository = documentRepository;
         _segmentRepository = segmentRepository;
         _jobRepository = jobRepository;
         _embeddingService = embeddingService;
+        _entityMentionService = entityMentionService;
+        _entityResolutionService = entityResolutionService;
     }
 
     public async Task<Guid> IngestDocumentAsync(
@@ -71,12 +77,55 @@ public class IngestionService : IIngestionService
             UniverseId = universeId,
             DocumentId = documentId,
             JobType = JobType.Ingest,
-            Status = JobStatus.Queued,
+            Status = JobStatus.Running,
             Progress = "{\"stage\": \"segmentation_complete\", \"segments_created\": " + segments.Count() + "}",
             CreatedAt = DateTime.UtcNow
         };
         
         await _jobRepository.CreateAsync(job, cancellationToken);
+        
+        try
+        {
+            // Phase 2: Entity mention detection
+            job.Progress = "{\"stage\": \"mention_detection_started\", \"segments_created\": " + segments.Count() + "}";
+            await _jobRepository.UpdateAsync(job, cancellationToken);
+            
+            var mentions = await _entityMentionService.DetectMentionsBatchAsync(segments, universeId, cancellationToken);
+            var mentionsList = mentions.ToList();
+            
+            job.Progress = "{\"stage\": \"mention_detection_complete\", \"segments_created\": " + segments.Count() + 
+                          ", \"mentions_detected\": " + mentionsList.Count + "}";
+            await _jobRepository.UpdateAsync(job, cancellationToken);
+            
+            // Phase 2: Entity resolution
+            job.Progress = "{\"stage\": \"entity_resolution_started\", \"segments_created\": " + segments.Count() + 
+                          ", \"mentions_detected\": " + mentionsList.Count + "}";
+            await _jobRepository.UpdateAsync(job, cancellationToken);
+            
+            var resolvedMentions = await _entityResolutionService.ResolveMentionsBatchAsync(mentionsList, cancellationToken);
+            var resolvedList = resolvedMentions.ToList();
+            
+            var resolvedCount = resolvedList.Count(m => m.ResolutionStatus == ResolutionStatus.Resolved);
+            var candidateCount = resolvedList.Count(m => m.ResolutionStatus == ResolutionStatus.Candidate);
+            var unresolvedCount = resolvedList.Count(m => m.ResolutionStatus == ResolutionStatus.Unresolved);
+            
+            job.Status = JobStatus.Succeeded;
+            job.Progress = "{\"stage\": \"complete\", \"segments_created\": " + segments.Count() + 
+                          ", \"mentions_detected\": " + mentionsList.Count + 
+                          ", \"mentions_resolved\": " + resolvedCount +
+                          ", \"mentions_candidate\": " + candidateCount +
+                          ", \"mentions_unresolved\": " + unresolvedCount + "}";
+            job.CompletedAt = DateTime.UtcNow;
+            await _jobRepository.UpdateAsync(job, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            job.Status = JobStatus.Failed;
+            job.Error = ex.Message;
+            job.CompletedAt = DateTime.UtcNow;
+            await _jobRepository.UpdateAsync(job, cancellationToken);
+            throw;
+        }
         
         return job.JobId;
     }
