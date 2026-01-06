@@ -49,4 +49,14 @@ public interface IEntityAliasRepository
     /// Checks if an alias already exists for an entity.
     /// </summary>
     Task<bool> AliasExistsAsync(Guid entityId, string aliasNorm, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates an existing entity alias.
+    /// </summary>
+    Task UpdateAsync(EntityAlias alias, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes an entity alias by ID.
+    /// </summary>
+    Task DeleteAsync(Guid aliasId, CancellationToken cancellationToken = default);
 }

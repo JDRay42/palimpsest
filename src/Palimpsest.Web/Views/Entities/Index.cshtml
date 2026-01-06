@@ -15,6 +15,17 @@
     }
 </div>
 
+<div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <sl-button variant="primary" href="/entities/create">
+        <sl-icon slot="prefix" name="plus-circle"></sl-icon>
+        Create Entity
+    </sl-button>
+    <sl-button variant="default" href="/entities/import">
+        <sl-icon slot="prefix" name="upload"></sl-icon>
+        Import Entities
+    </sl-button>
+</div>
+
 <sl-card style="margin-bottom: 20px;">
     <form method="get" asp-action="Search" style="display: flex; gap: 10px;">
         <sl-input 
@@ -60,7 +71,7 @@ else
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
         @foreach (var entity in Model)
         {
-            <sl-card>
+            <sl-card data-entity-id="@entity.EntityId">
                 <div slot="header" style="display: flex; justify-content: space-between; align-items: center;">
                     <strong>@entity.CanonicalName</strong>
                     <sl-badge variant="@(entity.EntityType switch {

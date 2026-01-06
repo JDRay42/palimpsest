@@ -1,0 +1,125 @@
+@{
+    ViewData["Title"] = "Import Entities";
+}
+
+<h2>Bulk Import Entities</h2>
+
+<sl-alert variant="primary" open style="margin-bottom: 20px;">
+    <sl-icon slot="icon" name="info-circle"></sl-icon>
+    <strong>Bulk Import</strong>
+    <p style="margin: 10px 0 0 0;">
+        Upload a JSON or CSV file containing entity names to pre-load characters, places, and organizations.
+        This is useful before ingesting documents, allowing the NER system to recognize these entities automatically.
+    </p>
+</sl-alert>
+
+<form method="post" asp-action="Import" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    
+    <sl-card style="margin-bottom: 20px;">
+        <div slot="header">
+            <strong>Upload File</strong>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div>
+                <label for="format">File Format <span style="color: red;">*</span></label>
+                <sl-select id="format" name="format" value="json" style="margin-top: 5px;">
+                    <sl-option value="json">JSON</sl-option>
+                    <sl-option value="csv">CSV</sl-option>
+                </sl-select>
+            </div>
+
+            <div>
+                <label for="file">Select File <span style="color: red;">*</span></label>
+                <input 
+                    type="file" 
+                    id="file" 
+                    name="file" 
+                    accept=".json,.csv" 
+                    required
+                    style="margin-top: 5px; display: block; width: 100%;" />
+            </div>
+        </div>
+
+        <div slot="footer" style="display: flex; justify-content: space-between;">
+            <sl-button variant="default" href="/entities">
+                <sl-icon slot="prefix" name="x-circle"></sl-icon>
+                Cancel
+            </sl-button>
+            <sl-button variant="primary" type="submit">
+                <sl-icon slot="prefix" name="upload"></sl-icon>
+                Import Entities
+            </sl-button>
+        </div>
+    </sl-card>
+</form>
+
+<sl-card style="margin-bottom: 20px;">
+    <div slot="header">
+        <strong>Format Examples</strong>
+    </div>
+
+    <sl-details summary="JSON Format">
+        <p><strong>Example JSON structure:</strong></p>
+        <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>[
+  {
+    "name": "Celestina Maria Foscari",
+    "type": "Person",
+    "aliases": ["Celeste", "The Lady Foscari", "Maria"]
+  },
+  {
+    "name": "Venice",
+    "type": "Place",
+    "aliases": ["La Serenissima", "The Republic"]
+  },
+  {
+    "name": "Council of Ten",
+    "type": "Org",
+    "aliases": ["The Ten", "Il Consiglio dei Dieci"]
+  }
+]</code></pre>
+        <p style="margin-top: 10px;"><strong>Fields:</strong></p>
+        <ul>
+            <li><code>name</code> (required): The canonical/preferred name</li>
+            <li><code>type</code> (optional): Person, Place, Org, Object, Event (default: Person)</li>
+            <li><code>aliases</code> (optional): Array of alternative names/nicknames</li>
+        </ul>
+    </sl-details>
+
+    <sl-details summary="CSV Format">
+        <p><strong>Example CSV structure:</strong></p>
+        <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>name,type,aliases
+"Celestina Maria Foscari","Person","Celeste;The Lady Foscari;Maria"
+"Venice","Place","La Serenissima;The Republic"
+"Council of Ten","Org","The Ten;Il Consiglio dei Dieci"</code></pre>
+        <p style="margin-top: 10px;"><strong>Columns:</strong></p>
+        <ul>
+            <li><code>name</code> (required): The canonical/preferred name</li>
+            <li><code>type</code> (optional): Person, Place, Org, Object, Event (default: Person)</li>
+            <li><code>aliases</code> (optional): Semicolon-separated list of alternative names</li>
+        </ul>
+        <p style="margin-top: 10px;"><small><strong>Note:</strong> Header row is optional. If present, it will be automatically detected and skipped.</small></p>
+    </sl-details>
+</sl-card>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <sl-alert variant="danger" open closable style="margin-top: 20px;">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <strong>Error</strong>
+        <p style="margin: 10px 0 0 0;">@TempData["ErrorMessage"]</p>
+    </sl-alert>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            form?.addEventListener('submit', async (e) => {
+                await customElements.whenDefined('sl-select');
+            });
+        });
+    </script>
+}

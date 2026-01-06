@@ -139,4 +139,20 @@ public class EntityAliasRepository : IEntityAliasRepository
 
         return d[s1.Length, s2.Length];
     }
+
+    public async Task UpdateAsync(EntityAlias alias, CancellationToken cancellationToken = default)
+    {
+        _context.EntityAliases.Update(alias);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Guid aliasId, CancellationToken cancellationToken = default)
+    {
+        var alias = await _context.EntityAliases.FindAsync(new object[] { aliasId }, cancellationToken);
+        if (alias != null)
+        {
+            _context.EntityAliases.Remove(alias);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+    }
 }

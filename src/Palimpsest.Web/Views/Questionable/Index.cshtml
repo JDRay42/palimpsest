@@ -1,92 +1,142 @@
 @using Palimpsest.Domain.Enums
+@using Palimpsest.Domain.Entities
 @model IEnumerable<QuestionableItem>
 
 @{
     ViewData["Title"] = "Questionable Items";
 }
 
-<h2 style="margin-bottom: 30px;">Questionable Items</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Questionable Items</h2>
+    <sl-badge variant="warning" pill>
+        @ViewBag.PendingCount Pending
+    </sl-badge>
+</div>
 
-<sl-alert variant="primary" open style="margin-bottom: 20px;">
+<sl-alert variant="primary" open closable style="margin-bottom: 20px;">
     <sl-icon slot="icon" name="info-circle"></sl-icon>
-    <strong>About Questionable Items</strong>
+    <strong>Review Queue</strong>
     <p style="margin: 10px 0 0 0;">
-        This page displays conflicts, contradictions, ambiguities, and other items that require human review.
+        These items require your attention. They represent ambiguous entity matches, conflicts, or other issues detected during document analysis.
+        Review each item and choose to resolve (link to correct entity), dismiss (mark as false positive), or create a new entity.
     </p>
 </sl-alert>
+
+<sl-card style="margin-bottom: 20px;">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <sl-button href="/questionable" variant="@(ViewBag.FilteredStatus == null ? "primary" : "default")">
+            All (@(ViewBag.PendingCount + ViewBag.ResolvedCount + ViewBag.DismissedCount))
+        </sl-button>
+        <sl-button href="/questionable?status=Open" variant="@(ViewBag.FilteredStatus?.ToString() == "Open" ? "primary" : "default")">
+            <sl-icon slot="prefix" name="clock"></sl-icon>
+            Open (@ViewBag.PendingCount)
+        </sl-button>
+        <sl-button href="/questionable?status=Resolved" variant="@(ViewBag.FilteredStatus?.ToString() == "Resolved" ? "primary" : "default")">
+            <sl-icon slot="prefix" name="check-circle"></sl-icon>
+            Resolved (@ViewBag.ResolvedCount)
+        </sl-button>
+        <sl-button href="/questionable?status=Dismissed" variant="@(ViewBag.FilteredStatus?.ToString() == "Dismissed" ? "primary" : "default")">
+            <sl-icon slot="prefix" name="x-circle"></sl-icon>
+            Dismissed (@ViewBag.DismissedCount)
+        </sl-button>
+    </div>
+</sl-card>
 
 @if (!Model.Any())
 {
     <sl-card style="margin: 40px 0;">
         <div style="text-align: center; padding: 40px;">
-            <sl-icon name="question-circle" style="font-size: 64px; color: #667eea; margin-bottom: 20px;"></sl-icon>
-            <h3>No Questionable Items</h3>
-            <p>Great! No conflicts or issues have been detected in your universe.</p>
+            <sl-icon name="check-circle" style="font-size: 64px; color: #10b981; margin-bottom: 20px;"></sl-icon>
+            <h3>All Clear!</h3>
+            <p>No questionable items found. Great work keeping things clean!</p>
         </div>
     </sl-card>
 }
 else
 {
-    <div style="margin-bottom: 20px;">
-        <sl-button-group>
-            <sl-button variant="@(ViewBag.Filter == null ? "primary" : "default")" href="/questionable">
-                All (@Model.Count())
-            </sl-button>
-            <sl-button variant="@(ViewBag.Filter == "Conflict" ? "primary" : "default")" href="/questionable?filter=Conflict">
-                Conflicts
-            </sl-button>
-            <sl-button variant="@(ViewBag.Filter == "Ambiguity" ? "primary" : "default")" href="/questionable?filter=Ambiguity">
-                Ambiguities
-            </sl-button>
-            <sl-button variant="@(ViewBag.Filter == "Inconsistency" ? "primary" : "default")" href="/questionable?filter=Inconsistency">
-                Inconsistencies
-            </sl-button>
-        </sl-button-group>
-    </div>
-
     <div style="display: flex; flex-direction: column; gap: 15px;">
         @foreach (var item in Model)
         {
             <sl-card>
-                <div slot="header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong>@item.ItemType</strong>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <sl-badge variant="@(item.Severity switch {
-                            Severity.Error => "danger",
-                            Severity.Warn => "warning",
-                            Severity.Info => "primary",
-                            _ => "neutral"
-                        })" pill>
-                            @item.Severity
-                        </sl-badge>
-                        <sl-badge variant="@(item.Status switch {
-                            QuestionableItemStatus.Open => "primary",
-                            QuestionableItemStatus.Dismissed => "neutral",
-                            QuestionableItemStatus.Resolved => "success",
-                            _ => "neutral"
-                        })">
-                            @item.Status
-                        </sl-badge>
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                            <sl-badge variant="@(item.Status switch {
+                                QuestionableItemStatus.Open => "warning",
+                                QuestionableItemStatus.Resolved => "success",
+                                QuestionableItemStatus.Dismissed => "neutral",
+                                _ => "neutral"
+                            })" pill>
+                                @item.Status
+                            </sl-badge>
+                            
+                            <sl-badge variant="@(item.ItemType switch {
+                                QuestionableItemType.Identity => "danger",
+                                QuestionableItemType.Conflict => "warning",
+                                QuestionableItemType.LowConfidence => "primary",
+                                QuestionableItemType.Constraint => "info",
+                                _ => "neutral"
+                            })">
+                                @item.ItemType
+                            </sl-badge>
+
+                            <sl-badge variant="@(item.Severity switch {
+                                Severity.Error => "danger",
+                                Severity.Warn => "warning",
+                                Severity.Info => "primary",
+                                _ => "neutral"
+                            })">
+                                @item.Severity Severity
+                            </sl-badge>
+                        </div>
+
+                        <p style="margin: 10px 0; font-size: 1.1em;">
+                            <strong>@item.ItemType - @item.Severity</strong>
+                        </p>
+
+                        <p style="color: #666; margin: 10px 0; font-style: italic; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+                            @item.Details
+                        </p>
+
+                        <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #999;">
+                            <sl-icon name="calendar"></sl-icon> Created: @item.CreatedAt.ToString("MMM d, yyyy HH:mm")
+                            @if (item.ResolvedAt.HasValue)
+                            {
+                                <span style="margin-left: 15px;">
+                                    <sl-icon name="check"></sl-icon> Resolved: @item.ResolvedAt.Value.ToString("MMM d, yyyy HH:mm")
+                                </span>
+                            }
+                        </p>
+
+                        @if (!string.IsNullOrEmpty(item.Resolution))
+                        {
+                            <p style="margin: 10px 0 0 0; padding: 10px; background: #e0f2fe; border-left: 3px solid #0284c7; border-radius: 3px;">
+                                <small><strong>Resolution:</strong> @item.Resolution</small>
+                            </p>
+                        }
                     </div>
-                </div>
-                
-                <p style="margin: 15px 0;">@item.ItemType - @item.Severity</p>
-                
-                <p style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-                    <small>@item.Details</small>
-                </p>
-                
-                <div slot="footer" style="display: flex; justify-content: space-between; align-items: center;">
-                    <small style="color: #666;">
-                        Detected: @item.CreatedAt.ToString("MMM d, yyyy")
-                    </small>
-                    <div style="display: flex; gap: 10px;">
-                        <sl-button size="small" variant="primary" outline>
-                            Review
-                        </sl-button>
-                        <sl-button size="small" variant="default" outline>
-                            Dismiss
-                        </sl-button>
+
+                    <div style="display: flex; gap: 8px; margin-left: 20px;">
+                        @if (item.Status == QuestionableItemStatus.Open)
+                        {
+                            <sl-button 
+                                variant="primary" 
+                                size="small"
+                                href="/questionable/details/@item.ItemId">
+                                <sl-icon slot="prefix" name="eye"></sl-icon>
+                                Review
+                            </sl-button>
+                        }
+                        else
+                        {
+                            <sl-button 
+                                variant="default" 
+                                size="small"
+                                href="/questionable/details/@item.ItemId">
+                                <sl-icon slot="prefix" name="eye"></sl-icon>
+                                View
+                            </sl-button>
+                        }
                     </div>
                 </div>
             </sl-card>
@@ -95,8 +145,45 @@ else
 }
 
 <div style="margin-top: 30px;">
-    <sl-button href="/universes" variant="default">
+    <sl-button href="/entities" variant="default">
         <sl-icon slot="prefix" name="arrow-left"></sl-icon>
-        Back to Universes
+        Back to Entities
     </sl-button>
 </div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alert = document.createElement('sl-alert');
+            alert.variant = 'success';
+            alert.closable = true;
+            alert.duration = 5000;
+            alert.innerHTML = `
+                <sl-icon slot="icon" name="check-circle"></sl-icon>
+                <strong>Success</strong>
+                <p style="margin: 10px 0 0 0;">@TempData["SuccessMessage"]</p>
+            `;
+            document.body.appendChild(alert);
+            alert.toast();
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alert = document.createElement('sl-alert');
+            alert.variant = 'danger';
+            alert.closable = true;
+            alert.innerHTML = `
+                <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                <strong>Error</strong>
+                <p style="margin: 10px 0 0 0;">@TempData["ErrorMessage"]</p>
+            `;
+            document.body.appendChild(alert);
+            alert.toast();
+        });
+    </script>
+}

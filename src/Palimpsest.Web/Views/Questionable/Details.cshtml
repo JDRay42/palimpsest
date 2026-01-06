@@ -1,0 +1,305 @@
+@using Palimpsest.Domain.Enums
+@using Palimpsest.Domain.Entities
+@model QuestionableItem
+
+@{
+    ViewData["Title"] = "Review Questionable Item";
+    var mention = ViewBag.Mention as EntityMention;
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/questionable">Questionable Items</sl-breadcrumb-item>
+        <sl-breadcrumb-item>Review Item</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<h2 style="margin-bottom: 30px;">Review Questionable Item</h2>
+
+<sl-card style="margin-bottom: 20px;">
+    <div slot="header">
+        <strong>Item Details</strong>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <sl-badge variant="@(Model.Status switch {
+            QuestionableItemStatus.Open => "warning",
+            QuestionableItemStatus.Resolved => "success",
+            QuestionableItemStatus.Dismissed => "neutral",
+            _ => "neutral"
+        })" pill>
+            @Model.Status
+        </sl-badge>
+        
+        <sl-badge variant="@(Model.ItemType switch {
+            QuestionableItemType.Identity => "danger",
+            QuestionableItemType.Conflict => "warning",
+            QuestionableItemType.LowConfidence => "primary",
+            QuestionableItemType.Constraint => "info",
+            _ => "neutral"
+        })">
+            @Model.ItemType
+        </sl-badge>
+
+        <sl-badge variant="@(Model.Severity switch {
+            Severity.Error => "danger",
+            Severity.Warn => "warning",
+            Severity.Info => "primary",
+            _ => "neutral"
+        })">
+            @Model.Severity Severity
+        </sl-badge>
+    </div>
+
+    <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 15px;">
+        <dt><strong>Details</strong></dt>
+        <dd>@Model.Details</dd>
+        
+        <dt><strong>Item Type</strong></dt>
+        <dd>@Model.ItemType</dd>
+        
+        <dt><strong>Created</strong></dt>
+        <dd>@Model.CreatedAt.ToString("MMMM d, yyyy HH:mm:ss")</dd>
+        
+        @if (Model.ResolvedAt.HasValue)
+        {
+            <dt><strong>Resolved</strong></dt>
+            <dd>@Model.ResolvedAt.Value.ToString("MMMM d, yyyy HH:mm:ss")</dd>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.Resolution))
+        {
+            <dt><strong>Resolution</strong></dt>
+            <dd style="padding: 10px; background: #e0f2fe; border-left: 3px solid #0284c7; border-radius: 3px;">
+                @Model.Resolution
+            </dd>
+        }
+    </dl>
+</sl-card>
+
+@if (mention != null)
+{
+    <sl-card style="margin-bottom: 20px;">
+        <div slot="header">
+            <strong>Detected Mention</strong>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <p style="font-size: 1.2em; margin-bottom: 10px;">
+                <strong>Surface Form:</strong> <span style="color: #667eea;">@mention.SurfaceForm</span>
+            </p>
+            
+            <p style="margin-bottom: 10px;">
+                <strong>Confidence:</strong> 
+                <sl-badge variant="@(mention.Confidence > 0.8 ? "success" : mention.Confidence > 0.5 ? "warning" : "danger")">
+                    @((mention.Confidence * 100).ToString("F0"))%
+                </sl-badge>
+            </p>
+            
+            @if (mention.Segment != null)
+            {
+                <p style="margin-top: 15px;">
+                    <strong>Context from Document:</strong>
+                </p>
+                <p style="color: #666; margin: 10px 0; font-style: italic; background: #f5f5f5; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                    "@mention.Segment.Text"
+                </p>
+            }
+        </div>
+    </sl-card>
+}
+
+@if (Model.Status == QuestionableItemStatus.Open)
+{
+    <sl-card style="margin-bottom: 20px;">
+        <div slot="header">
+            <strong>Resolution Actions</strong>
+        </div>
+
+        <sl-alert variant="primary" open closable style="margin-bottom: 20px;">
+            <sl-icon slot="icon" name="info-circle"></sl-icon>
+            <strong>How to Resolve</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li><strong>Link to Existing Entity:</strong> Search for and select the correct entity below</li>
+                <li><strong>Create New Entity:</strong> If no matching entity exists, create a new one</li>
+                <li><strong>Dismiss:</strong> Mark as false positive if this mention should be ignored</li>
+            </ul>
+        </sl-alert>
+
+        <div style="margin-bottom: 30px;">
+            <h4>Search for Existing Entity</h4>
+            <sl-input 
+                id="entitySearch" 
+                placeholder="Type to search entities..."
+                style="margin-bottom: 15px;">
+                <sl-icon name="search" slot="prefix"></sl-icon>
+            </sl-input>
+
+            <div id="searchResults" style="max-height: 400px; overflow-y: auto; display: none;">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+
+        <form id="resolveForm" method="post" asp-action="Resolve" asp-route-id="@Model.ItemId" style="display: none; margin-top: 20px;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="selectedEntityId" name="selectedEntityId" />
+            
+            <sl-textarea 
+                name="notes" 
+                label="Resolution Notes (optional)" 
+                placeholder="Add any notes about this resolution..."
+                rows="3"
+                style="margin-bottom: 15px;"></sl-textarea>
+
+            <div style="display: flex; gap: 10px;">
+                <sl-button type="submit" variant="success">
+                    <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                    Confirm Resolution
+                </sl-button>
+                <sl-button type="button" variant="default" onclick="cancelResolve()">
+                    Cancel
+                </sl-button>
+            </div>
+        </form>
+
+        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #ddd;">
+            <h4>Or Create New Entity</h4>
+            <p style="color: #666; margin-bottom: 15px;">
+                If no matching entity exists, you can create a new one. The system will then link this mention to the newly created entity.
+            </p>
+            <form method="post" asp-action="CreateAndResolve" asp-route-id="@Model.ItemId">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="canonicalName" value="@(mention?.SurfaceForm ?? "")" />
+                <input type="hidden" name="entityType" value="Person" />
+                <sl-button type="submit" variant="primary">
+                    <sl-icon slot="prefix" name="plus-circle"></sl-icon>
+                    Create New Entity from "@(mention?.SurfaceForm ?? "mention")"
+                </sl-button>
+            </form>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #ddd;">
+            <h4>Or Dismiss as False Positive</h4>
+            <p style="color: #666; margin-bottom: 15px;">
+                If this mention is incorrect or should be ignored, you can dismiss it as a false positive.
+            </p>
+            <form method="post" asp-action="Dismiss" asp-route-id="@Model.ItemId">
+                @Html.AntiForgeryToken()
+                <sl-textarea 
+                    name="notes" 
+                    label="Dismissal Reason (optional)" 
+                    placeholder="Why is this being dismissed?"
+                    rows="2"
+                    style="margin-bottom: 15px;"></sl-textarea>
+                <sl-button type="submit" variant="danger">
+                    <sl-icon slot="prefix" name="x-circle"></sl-icon>
+                    Dismiss as False Positive
+                </sl-button>
+            </form>
+        </div>
+    </sl-card>
+}
+
+<div style="margin-top: 30px;">
+    <sl-button href="/questionable" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Questionable Items
+    </sl-button>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('entitySearch');
+            const searchResults = document.getElementById('searchResults');
+            const resolveForm = document.getElementById('resolveForm');
+            const selectedEntityInput = document.getElementById('selectedEntityId');
+            let searchTimeout;
+
+            // Entity search functionality
+            searchInput?.addEventListener('sl-input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim();
+
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`/entities/search?query=${encodeURIComponent(query)}`);
+                        const html = await response.text();
+                        
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const entityCards = doc.querySelectorAll('sl-card[data-entity-id]');
+
+                        if (entityCards.length === 0) {
+                            searchResults.innerHTML = '<p style="padding: 15px; color: #666;">No entities found matching your search.</p>';
+                            searchResults.style.display = 'block';
+                            return;
+                        }
+
+                        let resultsHtml = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+                        entityCards.forEach(card => {
+                            const entityId = card.getAttribute('data-entity-id');
+                            const name = card.querySelector('strong')?.textContent || 'Unknown';
+                            const type = card.querySelector('sl-badge')?.textContent?.trim() || 'Unknown';
+                            const aliases = card.querySelector('small')?.textContent || '';
+                            
+                            resultsHtml += `
+                                <sl-card style="cursor: pointer;" onclick="selectEntity('${entityId}', '${name}')" data-result-entity-id="${entityId}">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <strong>${name}</strong>
+                                            ${aliases ? '<p style="margin: 5px 0 0 0; font-size: 0.9em; color: #666;">' + aliases + '</p>' : ''}
+                                        </div>
+                                        <sl-badge>${type}</sl-badge>
+                                    </div>
+                                </sl-card>
+                            `;
+                        });
+                        resultsHtml += '</div>';
+
+                        searchResults.innerHTML = resultsHtml;
+                        searchResults.style.display = 'block';
+                    } catch (error) {
+                        console.error('Search error:', error);
+                        searchResults.innerHTML = '<p style="padding: 15px; color: #dc2626;">Error searching entities. Please try again.</p>';
+                        searchResults.style.display = 'block';
+                    }
+                }, 300);
+            });
+
+            // Enable Shoelace component form participation
+            const form = document.querySelector('form');
+            form?.addEventListener('submit', async (e) => {
+                await customElements.whenDefined('sl-textarea');
+            });
+        });
+
+        function selectEntity(entityId, name) {
+            document.getElementById('selectedEntityId').value = entityId;
+            document.getElementById('resolveForm').style.display = 'block';
+            
+            // Highlight selected entity
+            document.querySelectorAll('[data-result-entity-id]').forEach(card => {
+                card.style.border = '1px solid #ddd';
+            });
+            const selectedCard = document.querySelector(`[data-result-entity-id="${entityId}"]`);
+            if (selectedCard) {
+                selectedCard.style.border = '2px solid #667eea';
+                selectedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function cancelResolve() {
+            document.getElementById('resolveForm').style.display = 'none';
+            document.getElementById('selectedEntityId').value = '';
+            document.querySelectorAll('[data-result-entity-id]').forEach(card => {
+                card.style.border = '1px solid #ddd';
+            });
+        }
+    </script>
+}
