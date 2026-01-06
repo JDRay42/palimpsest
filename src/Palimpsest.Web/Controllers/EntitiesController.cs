@@ -133,7 +133,8 @@ public class EntitiesController : Controller
                 var aliasNames = aliasLines
                     .Select(line => line.Trim())
                     .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
-                                       !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase));
+                                       !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
                 
                 foreach (var aliasName in aliasNames)
                 {
@@ -442,7 +443,8 @@ public class EntitiesController : Controller
                         {
                             var validAliases = dto.Aliases
                                 .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
-                                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase));
+                                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
                             
                             foreach (var aliasName in validAliases)
                             {
@@ -519,7 +521,8 @@ public class EntitiesController : Controller
                     // Add aliases
                     var validAliases = aliases
                         .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
-                                           !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase));
+                                           !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
                     
                     foreach (var aliasName in validAliases)
                     {
