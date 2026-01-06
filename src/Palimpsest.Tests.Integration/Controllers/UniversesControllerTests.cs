@@ -86,7 +86,7 @@ public class UniversesControllerTests : IClassFixture<PalimpsestWebApplicationFa
             ["__RequestVerificationToken"] = antiForgeryToken
         };
 
-        var content = new FormUrlEncodedContent(formData);
+        using var content = new FormUrlEncodedContent(formData);
 
         // Act
         var postResponse = await _client.PostAsync("/universes/create", content);
@@ -170,9 +170,10 @@ public class UniversesControllerTests : IClassFixture<PalimpsestWebApplicationFa
         };
 
         // Act
+        using var formContent = new FormUrlEncodedContent(formData);
         var postResponse = await _client.PostAsync(
             $"/universes/setactive?id={universe.UniverseId}", 
-            new FormUrlEncodedContent(formData));
+            formContent);
 
         // Assert
         postResponse.StatusCode.Should().Be(HttpStatusCode.Redirect);

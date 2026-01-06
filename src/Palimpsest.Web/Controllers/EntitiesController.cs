@@ -130,22 +130,23 @@ public class EntitiesController : Controller
             if (!string.IsNullOrWhiteSpace(aliasesText))
             {
                 var aliasLines = aliasesText.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var aliasLine in aliasLines)
+                var aliasNames = aliasLines
+                    .Select(line => line.Trim())
+                    .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
+                                       !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                
+                foreach (var aliasName in aliasNames)
                 {
-                    var aliasName = aliasLine.Trim();
-                    if (!string.IsNullOrWhiteSpace(aliasName) && 
-                        !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                    var alias = new EntityAlias
                     {
-                        var alias = new EntityAlias
-                        {
-                            AliasId = Guid.NewGuid(),
-                            EntityId = entity.EntityId,
-                            Alias = aliasName,
-                            AliasNorm = aliasName.ToLowerInvariant(),
-                            CreatedAt = DateTime.UtcNow
-                        };
-                        await _entityAliasRepository.CreateAsync(alias);
-                    }
+                        AliasId = Guid.NewGuid(),
+                        EntityId = entity.EntityId,
+                        Alias = aliasName,
+                        AliasNorm = aliasName.ToLowerInvariant(),
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _entityAliasRepository.CreateAsync(alias);
                 }
             }
 
@@ -237,24 +238,25 @@ public class EntitiesController : Controller
             if (!string.IsNullOrWhiteSpace(aliasesText))
             {
                 var aliasLines = aliasesText.Split(new[] { ',', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var line in aliasLines)
+                var validAliases = aliasLines
+                    .Select(line => line.Trim())
+                    .Where(trimmed => !string.IsNullOrWhiteSpace(trimmed));
+                
+                foreach (var trimmed in validAliases)
                 {
-                    var trimmed = line.Trim();
-                    if (!string.IsNullOrWhiteSpace(trimmed))
-                    {
-                        newAliases.Add(trimmed);
-                    }
+                    newAliases.Add(trimmed);
                 }
             }
 
             // Remove aliases not in new list (except canonical)
-            foreach (var alias in existingAliases)
+            var aliasesToRemove = existingAliases
+                .Where(alias => !alias.Alias.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase) &&
+                               !newAliases.Contains(alias.Alias))
+                .ToList();
+            
+            foreach (var alias in aliasesToRemove)
             {
-                if (!alias.Alias.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase) &&
-                    !newAliases.Contains(alias.Alias))
-                {
-                    await _entityAliasRepository.DeleteAsync(alias.AliasId);
-                }
+                await _entityAliasRepository.DeleteAsync(alias.AliasId);
             }
 
             // Add new aliases
@@ -262,21 +264,22 @@ public class EntitiesController : Controller
                 existingAliases.Select(a => a.Alias), 
                 StringComparer.OrdinalIgnoreCase);
             
-            foreach (var aliasName in newAliases)
+            var aliasesToAdd = newAliases
+                .Where(aliasName => !existingAliasNames.Contains(aliasName) && 
+                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            
+            foreach (var aliasName in aliasesToAdd)
             {
-                if (!existingAliasNames.Contains(aliasName) && 
-                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                var alias = new EntityAlias
                 {
-                    var alias = new EntityAlias
-                    {
-                        AliasId = Guid.NewGuid(),
-                        EntityId = entity.EntityId,
-                        Alias = aliasName,
-                        AliasNorm = aliasName.ToLowerInvariant(),
-                        CreatedAt = DateTime.UtcNow
-                    };
-                    await _entityAliasRepository.CreateAsync(alias);
-                }
+                    AliasId = Guid.NewGuid(),
+                    EntityId = entity.EntityId,
+                    Alias = aliasName,
+                    AliasNorm = aliasName.ToLowerInvariant(),
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _entityAliasRepository.CreateAsync(alias);
             }
 
             TempData["SuccessMessage"] = $"Entity '{entity.CanonicalName}' updated successfully.";
@@ -438,21 +441,22 @@ public class EntitiesController : Controller
                         // Add additional aliases
                         if (dto.Aliases != null)
                         {
-                            foreach (var aliasName in dto.Aliases)
+                            var validAliases = dto.Aliases
+                                .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
+                                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+                            
+                            foreach (var aliasName in validAliases)
                             {
-                                if (!string.IsNullOrWhiteSpace(aliasName) && 
-                                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                                var alias = new EntityAlias
                                 {
-                                    var alias = new EntityAlias
-                                    {
-                                        AliasId = Guid.NewGuid(),
-                                        EntityId = entity.EntityId,
-                                        Alias = aliasName,
-                                        AliasNorm = aliasName.ToLowerInvariant(),
-                                        CreatedAt = DateTime.UtcNow
-                                    };
-                                    await _entityAliasRepository.CreateAsync(alias);
-                                }
+                                    AliasId = Guid.NewGuid(),
+                                    EntityId = entity.EntityId,
+                                    Alias = aliasName,
+                                    AliasNorm = aliasName.ToLowerInvariant(),
+                                    CreatedAt = DateTime.UtcNow
+                                };
+                                await _entityAliasRepository.CreateAsync(alias);
                             }
                         }
 
@@ -515,21 +519,22 @@ public class EntitiesController : Controller
                     await _entityAliasRepository.CreateAsync(primaryAlias);
 
                     // Add aliases
-                    foreach (var aliasName in aliases)
+                    var validAliases = aliases
+                        .Where(aliasName => !string.IsNullOrWhiteSpace(aliasName) && 
+                                           !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+                    
+                    foreach (var aliasName in validAliases)
                     {
-                        if (!string.IsNullOrWhiteSpace(aliasName) && 
-                            !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                        var alias = new EntityAlias
                         {
-                            var alias = new EntityAlias
-                            {
-                                AliasId = Guid.NewGuid(),
-                                EntityId = entity.EntityId,
-                                Alias = aliasName,
-                                AliasNorm = aliasName.ToLowerInvariant(),
-                                CreatedAt = DateTime.UtcNow
-                            };
-                            await _entityAliasRepository.CreateAsync(alias);
-                        }
+                            AliasId = Guid.NewGuid(),
+                            EntityId = entity.EntityId,
+                            Alias = aliasName,
+                            AliasNorm = aliasName.ToLowerInvariant(),
+                            CreatedAt = DateTime.UtcNow
+                        };
+                        await _entityAliasRepository.CreateAsync(alias);
                     }
 
                     imported++;
