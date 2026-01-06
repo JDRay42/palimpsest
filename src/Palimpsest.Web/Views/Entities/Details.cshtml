@@ -112,10 +112,10 @@
                                         })" pill>
                                             @mention.ResolutionStatus
                                         </sl-badge>
-                                        @if (mention.Confidence.HasValue)
+                                        @if (mention.Confidence > 0)
                                         {
-                                            <sl-badge variant="@(mention.Confidence.Value > 0.8 ? "success" : mention.Confidence.Value > 0.5 ? "warning" : "danger")">
-                                                @((mention.Confidence.Value * 100).ToString("F0"))% confident
+                                            <sl-badge variant="@(mention.Confidence > 0.8 ? "success" : mention.Confidence > 0.5 ? "warning" : "danger")">
+                                                @((mention.Confidence * 100).ToString("F0"))% confident
                                             </sl-badge>
                                         }
                                     </div>
@@ -138,7 +138,7 @@
                                         <sl-button 
                                             variant="success" 
                                             size="small"
-                                            onclick="updateMentionResolution('@mention.EntityMentionId', 'approve', null)">
+                                            onclick="updateMentionResolution('@mention.MentionId', 'approve', null)">
                                             <sl-icon slot="prefix" name="check-circle"></sl-icon>
                                             Approve
                                         </sl-button>
@@ -147,7 +147,7 @@
                                     <sl-button 
                                         variant="danger" 
                                         size="small"
-                                        onclick="updateMentionResolution('@mention.EntityMentionId', 'reject', null)">
+                                        onclick="updateMentionResolution('@mention.MentionId', 'reject', null)">
                                         <sl-icon slot="prefix" name="x-circle"></sl-icon>
                                         Reject
                                     </sl-button>
@@ -155,7 +155,7 @@
                                     <sl-button 
                                         variant="default" 
                                         size="small"
-                                        onclick="showRemapDialog('@mention.EntityMentionId', '@mention.SurfaceForm')">
+                                        onclick="showRemapDialog('@mention.MentionId', '@mention.SurfaceForm')">
                                         <sl-icon slot="prefix" name="arrow-left-right"></sl-icon>
                                         Remap
                                     </sl-button>

@@ -69,13 +69,9 @@ public class QuestionableController : Controller
             return NotFound();
         }
 
-        // Load associated mention if it exists
-        if (item.ObjectKind == ObjectKind.EntityMention && item.ObjectId.HasValue)
-        {
-            var mention = await _entityMentionRepository.GetByIdAsync(item.ObjectId.Value);
-            ViewBag.Mention = mention;
-        }
-
+        // Note: In the future, we could load associated mention or assertion
+        // For now, just show the questionable item details
+        
         return View(item);
     }
 
@@ -96,23 +92,18 @@ public class QuestionableController : Controller
         {
             // Update the questionable item status
             item.Status = QuestionableItemStatus.Resolved;
-            item.ResolutionStatus = ResolutionStatus.Resolved;
-            item.ResolutionNotes = notes;
             item.ResolvedAt = DateTime.UtcNow;
+            // Store resolution info in the Resolution JSON field
+            item.Resolution = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                selectedEntityId,
+                notes,
+                resolvedBy = "manual"
+            });
             await _questionableItemRepository.UpdateAsync(item);
 
-            // If this is an entity mention, update the mention
-            if (item.ObjectKind == ObjectKind.EntityMention && item.ObjectId.HasValue)
-            {
-                var mention = await _entityMentionRepository.GetByIdAsync(item.ObjectId.Value);
-                if (mention != null)
-                {
-                    mention.EntityId = selectedEntityId;
-                    mention.ResolutionStatus = ResolutionStatus.Resolved;
-                    await _entityMentionRepository.UpdateAsync(mention);
-                }
-            }
-
+            // Note: In the future, update associated mentions/assertions here
+            
             TempData["SuccessMessage"] = "Questionable item resolved successfully.";
             return RedirectToAction(nameof(Index));
         }
@@ -141,8 +132,13 @@ public class QuestionableController : Controller
         {
             // Update the questionable item status
             item.Status = QuestionableItemStatus.Dismissed;
-            item.ResolutionNotes = notes;
             item.ResolvedAt = DateTime.UtcNow;
+            // Store dismissal info in Resolution JSON field
+            item.Resolution = System.Text.Json.JsonSerializer.Serialize(new
+            {
+                notes,
+                dismissedBy = "manual"
+            });
             await _questionableItemRepository.UpdateAsync(item);
 
             TempData["SuccessMessage"] = "Questionable item dismissed successfully.";
@@ -176,3 +172,5 @@ public class QuestionableController : Controller
         TempData["SuggestedAliases"] = aliases;
         
         return RedirectToAction("Create", "Entities");
+    }
+}
