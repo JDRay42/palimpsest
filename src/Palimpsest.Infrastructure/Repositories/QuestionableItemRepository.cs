@@ -13,6 +13,10 @@ public class QuestionableItemRepository : IQuestionableItemRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestionableItemRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public QuestionableItemRepository(PalimpsestDbContext context)
     {
         _context = context;

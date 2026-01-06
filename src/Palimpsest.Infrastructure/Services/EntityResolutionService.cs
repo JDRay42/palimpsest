@@ -23,6 +23,13 @@ public class EntityResolutionService : IEntityResolutionService
     private const float AmbiguityThreshold = 0.75f;
     private const int MaxCandidates = 5;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityResolutionService"/> class.
+    /// </summary>
+    /// <param name="entityRepository">The entity repository.</param>
+    /// <param name="aliasRepository">The entity alias repository.</param>
+    /// <param name="mentionRepository">The entity mention repository.</param>
+    /// <param name="questionableItemRepository">The questionable item repository.</param>
     public EntityResolutionService(
         IEntityRepository entityRepository,
         IEntityAliasRepository aliasRepository,

@@ -6,10 +6,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Job operations.
+/// Provides data access for background processing jobs.
+/// </summary>
 public class JobRepository : IJobRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JobRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public JobRepository(PalimpsestDbContext context)
     {
         _context = context;

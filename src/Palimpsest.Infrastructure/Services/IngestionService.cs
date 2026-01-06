@@ -22,6 +22,15 @@ public class IngestionService : IIngestionService
     private readonly IEntityMentionService _entityMentionService;
     private readonly IEntityResolutionService _entityResolutionService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IngestionService"/> class.
+    /// </summary>
+    /// <param name="documentRepository">The document repository.</param>
+    /// <param name="segmentRepository">The segment repository.</param>
+    /// <param name="jobRepository">The job repository.</param>
+    /// <param name="embeddingService">The embedding service.</param>
+    /// <param name="entityMentionService">The entity mention service.</param>
+    /// <param name="entityResolutionService">The entity resolution service.</param>
     public IngestionService(
         IDocumentRepository documentRepository,
         ISegmentRepository segmentRepository,

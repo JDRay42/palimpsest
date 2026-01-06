@@ -18,6 +18,14 @@ public class EntitiesController : Controller
     private readonly IUniverseContextService _universeContext;
     private readonly ILogger<EntitiesController> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntitiesController"/> class.
+    /// </summary>
+    /// <param name="entityRepository">The entity repository.</param>
+    /// <param name="entityAliasRepository">The entity alias repository.</param>
+    /// <param name="entityMentionRepository">The entity mention repository.</param>
+    /// <param name="universeContext">The universe context service.</param>
+    /// <param name="logger">The logger.</param>
     public EntitiesController(
         IEntityRepository entityRepository,
         IEntityAliasRepository entityAliasRepository,

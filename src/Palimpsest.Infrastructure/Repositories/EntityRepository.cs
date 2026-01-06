@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Entity operations within a universe.
+/// Provides data access for entities including search and alias support.
+/// </summary>
 public class EntityRepository : IEntityRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public EntityRepository(PalimpsestDbContext context)
     {
         _context = context;

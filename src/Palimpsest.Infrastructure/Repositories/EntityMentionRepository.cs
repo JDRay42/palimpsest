@@ -13,6 +13,10 @@ public class EntityMentionRepository : IEntityMentionRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityMentionRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public EntityMentionRepository(PalimpsestDbContext context)
     {
         _context = context;

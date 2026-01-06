@@ -15,6 +15,13 @@ public class QuestionableController : Controller
     private readonly IEntityMentionRepository _entityMentionRepository;
     private readonly ILogger<QuestionableController> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuestionableController"/> class.
+    /// </summary>
+    /// <param name="universeContext">The universe context service.</param>
+    /// <param name="questionableItemRepository">The questionable item repository.</param>
+    /// <param name="entityMentionRepository">The entity mention repository.</param>
+    /// <param name="logger">The logger.</param>
     public QuestionableController(
         IUniverseContextService universeContext,
         IQuestionableItemRepository questionableItemRepository,

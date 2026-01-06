@@ -13,6 +13,12 @@ public class AssertionsController : Controller
     private readonly IUniverseContextService _universeContext;
     private readonly ILogger<AssertionsController> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AssertionsController"/> class.
+    /// </summary>
+    /// <param name="assertionRepository">The assertion repository.</param>
+    /// <param name="universeContext">The universe context service.</param>
+    /// <param name="logger">The logger.</param>
     public AssertionsController(
         IAssertionRepository assertionRepository,
         IUniverseContextService universeContext,

@@ -1,33 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj": {}
+    "/Users/jdray/Development/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj": {}
   },
   "projects": {
-    "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
+    "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj",
+        "projectUniqueName": "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj",
         "projectName": "Palimpsest.Application",
-        "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj",
-        "packagesPath": "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages",
-        "outputPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/obj/",
+        "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj",
+        "packagesPath": "/Users/jdray/.nuget/packages/",
+        "outputPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/runner/.nuget/NuGet/NuGet.Config"
+          "/Users/jdray/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.github.com/riptide-solutions/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj": {
-                "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj"
+              "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj": {
+                "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj"
               }
             }
           }
@@ -42,7 +43,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -58,42 +59,33 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj": {
+    "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj",
+        "projectUniqueName": "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj",
         "projectName": "Palimpsest.Domain",
-        "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj",
-        "packagesPath": "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages",
-        "outputPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Domain/obj/",
+        "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/Palimpsest.Domain.csproj",
+        "packagesPath": "/Users/jdray/.nuget/packages/",
+        "outputPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/runner/.nuget/NuGet/NuGet.Config"
+          "/Users/jdray/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.github.com/riptide-solutions/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -111,7 +103,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -127,49 +119,40 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj": {
+    "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj",
+        "projectUniqueName": "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj",
         "projectName": "Palimpsest.Infrastructure",
-        "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj",
-        "packagesPath": "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages",
-        "outputPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/obj/",
+        "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj",
+        "packagesPath": "/Users/jdray/.nuget/packages/",
+        "outputPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/runner/.nuget/NuGet/NuGet.Config"
+          "/Users/jdray/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.github.com/riptide-solutions/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
-                "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj"
+              "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
+                "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj"
               }
             }
           }
@@ -184,7 +167,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -220,52 +203,43 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj": {
+    "/Users/jdray/Development/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
+        "projectUniqueName": "/Users/jdray/Development/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
         "projectName": "Palimpsest.Web",
-        "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
-        "packagesPath": "/home/runner/work/palimpsest/.codeql-scratch/dbs/csharp/working/packages",
-        "outputPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Web/obj/",
+        "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Web/Palimpsest.Web.csproj",
+        "packagesPath": "/Users/jdray/.nuget/packages/",
+        "outputPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Web/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/runner/.nuget/NuGet/NuGet.Config"
+          "/Users/jdray/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.github.com/riptide-solutions/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
-                "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj"
+              "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj": {
+                "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Application/Palimpsest.Application.csproj"
               },
-              "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj": {
-                "projectPath": "/home/runner/work/palimpsest/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj"
+              "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj": {
+                "projectPath": "/Users/jdray/Development/palimpsest/src/Palimpsest.Infrastructure/Palimpsest.Infrastructure.csproj"
               }
             }
           }
@@ -280,7 +254,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -304,20 +278,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -326,7 +286,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

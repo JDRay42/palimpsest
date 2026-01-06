@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Segment operations.
+/// Provides data access for text segments within document versions.
+/// </summary>
 public class SegmentRepository : ISegmentRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SegmentRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public SegmentRepository(PalimpsestDbContext context)
     {
         _context = context;

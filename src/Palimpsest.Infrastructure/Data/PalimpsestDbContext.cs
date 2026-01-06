@@ -11,23 +11,78 @@ namespace Palimpsest.Infrastructure.Data;
 /// </summary>
 public class PalimpsestDbContext : DbContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PalimpsestDbContext"/> class.
+    /// </summary>
+    /// <param name="options">The options to be used by the DbContext.</param>
     public PalimpsestDbContext(DbContextOptions<PalimpsestDbContext> options)
         : base(options)
     {
     }
 
+    /// <summary>
+    /// Gets the DbSet for Universe entities.
+    /// </summary>
     public DbSet<Universe> Universes => Set<Universe>();
+    
+    /// <summary>
+    /// Gets the DbSet for Document entities.
+    /// </summary>
     public DbSet<Document> Documents => Set<Document>();
+    
+    /// <summary>
+    /// Gets the DbSet for DocumentVersion entities.
+    /// </summary>
     public DbSet<DocumentVersion> DocumentVersions => Set<DocumentVersion>();
+    
+    /// <summary>
+    /// Gets the DbSet for Segment entities.
+    /// </summary>
     public DbSet<Segment> Segments => Set<Segment>();
+    
+    /// <summary>
+    /// Gets the DbSet for SegmentEmbedding entities.
+    /// </summary>
     public DbSet<SegmentEmbedding> SegmentEmbeddings => Set<SegmentEmbedding>();
+    
+    /// <summary>
+    /// Gets the DbSet for Entity entities.
+    /// </summary>
     public DbSet<Entity> Entities => Set<Entity>();
+    
+    /// <summary>
+    /// Gets the DbSet for EntityAlias entities.
+    /// </summary>
     public DbSet<EntityAlias> EntityAliases => Set<EntityAlias>();
+    
+    /// <summary>
+    /// Gets the DbSet for EntityMention entities.
+    /// </summary>
     public DbSet<EntityMention> EntityMentions => Set<EntityMention>();
+    
+    /// <summary>
+    /// Gets the DbSet for Assertion entities.
+    /// </summary>
     public DbSet<Assertion> Assertions => Set<Assertion>();
+    
+    /// <summary>
+    /// Gets the DbSet for Edge entities.
+    /// </summary>
     public DbSet<Edge> Edges => Set<Edge>();
+    
+    /// <summary>
+    /// Gets the DbSet for QuestionableItem entities.
+    /// </summary>
     public DbSet<QuestionableItem> QuestionableItems => Set<QuestionableItem>();
+    
+    /// <summary>
+    /// Gets the DbSet for Dossier entities.
+    /// </summary>
     public DbSet<Dossier> Dossiers => Set<Dossier>();
+    
+    /// <summary>
+    /// Gets the DbSet for Job entities.
+    /// </summary>
     public DbSet<Job> Jobs => Set<Job>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
