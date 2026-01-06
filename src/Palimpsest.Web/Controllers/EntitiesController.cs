@@ -250,7 +250,8 @@ public class EntitiesController : Controller
             // Remove aliases not in new list (except canonical)
             var aliasesToRemove = existingAliases
                 .Where(alias => !alias.Alias.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase) &&
-                               !newAliases.Contains(alias.Alias));
+                               !newAliases.Contains(alias.Alias))
+                .ToList();
             
             foreach (var alias in aliasesToRemove)
             {
@@ -264,7 +265,8 @@ public class EntitiesController : Controller
             
             var aliasesToAdd = newAliases
                 .Where(aliasName => !existingAliasNames.Contains(aliasName) && 
-                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase));
+                                   !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
             
             foreach (var aliasName in aliasesToAdd)
             {
