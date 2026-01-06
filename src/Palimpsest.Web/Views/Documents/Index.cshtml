@@ -1,0 +1,112 @@
+@model IEnumerable<Document>
+
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Documents</h2>
+    <sl-button href="/documents/upload" variant="primary">
+        <sl-icon slot="prefix" name="cloud-upload"></sl-icon>
+        Upload Document
+    </sl-button>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <sl-alert variant="success" open closable style="margin-bottom: 20px;">
+        <sl-icon slot="icon" name="check-circle"></sl-icon>
+        @TempData["Success"]
+    </sl-alert>
+}
+
+@if (TempData["Warning"] != null)
+{
+    <sl-alert variant="warning" open closable style="margin-bottom: 20px;">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        @TempData["Warning"]
+    </sl-alert>
+}
+
+@if (TempData["Error"] != null)
+{
+    <sl-alert variant="danger" open closable style="margin-bottom: 20px;">
+        <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
+        @TempData["Error"]
+    </sl-alert>
+}
+
+@if (!Model.Any())
+{
+    <sl-card style="margin: 40px 0;">
+        <div style="text-align: center; padding: 40px;">
+            <sl-icon name="file-text" style="font-size: 64px; color: #667eea; margin-bottom: 20px;"></sl-icon>
+            <h3>No Documents Yet</h3>
+            <p>Upload your first document to start building your canon-aware knowledge base.</p>
+            <p style="color: #666; margin-top: 10px;">Supported formats: .txt, .md</p>
+            <sl-button href="/documents/upload" variant="primary" style="margin-top: 20px;">
+                Upload Your First Document
+            </sl-button>
+        </div>
+    </sl-card>
+}
+else
+{
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+        @foreach (var document in Model)
+        {
+            <sl-card>
+                <div slot="header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <sl-icon name="file-text" style="font-size: 20px; color: #667eea;"></sl-icon>
+                        <strong>@document.Title</strong>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 10px;">
+                    <sl-badge variant="neutral" pill>@document.Subtype</sl-badge>
+                    @if (document.Versions.Any())
+                    {
+                        <sl-badge variant="success" pill>@document.Versions.Count @(document.Versions.Count == 1 ? "Version" : "Versions")</sl-badge>
+                    }
+                </div>
+                
+                @if (!string.IsNullOrEmpty(document.SeriesName))
+                {
+                    <p style="margin: 5px 0;">
+                        <small><strong>Series:</strong> @document.SeriesName</small>
+                        @if (document.BookNumber.HasValue)
+                        {
+                            <small> (Book @document.BookNumber)</small>
+                        }
+                    </p>
+                }
+                
+                <p style="margin: 5px 0;">
+                    <small><strong>Created:</strong> @document.CreatedAt.ToString("MMM d, yyyy")</small>
+                </p>
+                
+                <div slot="footer" style="display: flex; gap: 10px;">
+                    <sl-button href="/documents/details/@document.DocumentId" variant="primary" outline style="flex: 1;">
+                        <sl-icon slot="prefix" name="eye"></sl-icon>
+                        View Details
+                    </sl-button>
+                </div>
+            </sl-card>
+        }
+    </div>
+}
+
+<script>
+    // Auto-close alerts after configurable timeout
+    const ALERT_TIMEOUT_MS = 8000; // Increased to 8 seconds for better accessibility
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('sl-alert[open]');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.hide();
+            }, ALERT_TIMEOUT_MS);
+        });
+    });
+</script>
