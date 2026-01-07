@@ -7,8 +7,13 @@
 <h2>Create Universe</h2>
 
 <sl-card style="max-width: 600px; margin: 20px 0;">
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" id="universeForm">
         @Html.AntiForgeryToken()
+        
+        <!-- Hidden inputs for form submission -->
+        <input type="hidden" id="hiddenName" name="Name" />
+        <input type="hidden" id="hiddenAuthorName" name="AuthorName" />
+        <input type="hidden" id="hiddenDescription" name="Description" />
         
         <div style="margin-bottom: 20px;">
             <label for="name">
@@ -17,7 +22,6 @@
             </label>
             <sl-input 
                 id="name" 
-                name="Name" 
                 placeholder="e.g., The Evermore Saga" 
                 required 
                 style="margin-top: 5px;">
@@ -31,7 +35,6 @@
             </label>
             <sl-input 
                 id="authorName" 
-                name="AuthorName" 
                 placeholder="Your name or pseudonym"
                 style="margin-top: 5px;">
             </sl-input>
@@ -43,7 +46,6 @@
             </label>
             <sl-textarea 
                 id="description" 
-                name="Description" 
                 placeholder="A brief description of your fictional universe..."
                 rows="4"
                 style="margin-top: 5px;">
@@ -51,7 +53,7 @@
         </div>
         
         <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <sl-button type="submit" variant="primary">
+            <sl-button type="submit" variant="primary" id="submitBtn">
                 <sl-icon slot="prefix" name="plus-circle"></sl-icon>
                 Create Universe
             </sl-button>
@@ -63,5 +65,43 @@
 </sl-card>
 
 @section Scripts {
-    <script src="https://unpkg.com/@@microsoft/signalr@latest/dist/browser/signalr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const form = document.getElementById('universeForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Wait for Shoelace components to be defined
+            await Promise.all([
+                customElements.whenDefined('sl-input'),
+                customElements.whenDefined('sl-textarea'),
+                customElements.whenDefined('sl-button')
+            ]);
+            
+            console.log('Shoelace components loaded');
+            
+            // Intercept form submission and copy values from Shoelace components to hidden inputs
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Copy values from Shoelace components to hidden inputs
+                const name = document.getElementById('name');
+                const authorName = document.getElementById('authorName');
+                const description = document.getElementById('description');
+                
+                document.getElementById('hiddenName').value = name.value || '';
+                document.getElementById('hiddenAuthorName').value = authorName.value || '';
+                document.getElementById('hiddenDescription').value = description.value || '';
+                
+                console.log('Form values:', {
+                    name: name.value,
+                    authorName: authorName.value,
+                    description: description.value
+                });
+                
+                // Submit the form
+                form.submit();
+            });
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

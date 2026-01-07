@@ -1,0 +1,98 @@
+@using Palimpsest.Domain.Enums
+@model IEnumerable<Assertion>
+
+@{
+    ViewData["Title"] = "Assertions";
+}
+
+<h2 style="margin-bottom: 30px;">Assertions</h2>
+
+@if (!Model.Any())
+{
+    <sl-card style="margin: 40px 0;">
+        <div style="text-align: center; padding: 40px;">
+            <sl-icon name="journals" style="font-size: 64px; color: #667eea; margin-bottom: 20px;"></sl-icon>
+            <h3>No Assertions Yet</h3>
+            <p>Assertions (facts) will appear here after documents are ingested and analyzed.</p>
+        </div>
+    </sl-card>
+}
+else
+{
+    <sl-alert variant="primary" open style="margin-bottom: 20px;">
+        <sl-icon slot="icon" name="info-circle"></sl-icon>
+        <strong>@Model.Count() assertions found</strong>
+    </sl-alert>
+
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        @foreach (var assertion in Model)
+        {
+            <sl-card>
+                <div style="display: flex; justify-content: space-between; align-items: start; gap: 20px;">
+                    <div style="flex: 1;">
+                        <p style="margin: 0 0 10px 0; font-size: 16px;">
+                            @if (assertion.SubjectEntity != null)
+                            {
+                                <strong>@assertion.SubjectEntity.CanonicalName</strong>
+                            }
+                            @assertion.Predicate
+                            @if (assertion.ObjectEntity != null)
+                            {
+                                <strong>@assertion.ObjectEntity.CanonicalName</strong>
+                            }
+                            else if (!string.IsNullOrEmpty(assertion.ObjectLiteral))
+                            {
+                                @assertion.ObjectLiteral
+                            }
+                        </p>
+                        
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            @if (assertion.SubjectEntity != null)
+                            {
+                                <small>
+                                    <strong>Subject:</strong> 
+                                    <a href="/entities/details/@assertion.SubjectEntityId">@assertion.SubjectEntity.CanonicalName</a>
+                                </small>
+                            }
+                            
+                            @if (assertion.ObjectEntity != null)
+                            {
+                                <small>
+                                    <strong>Object:</strong> 
+                                    <a href="/entities/details/@assertion.ObjectEntityId">@assertion.ObjectEntity.CanonicalName</a>
+                                </small>
+                            }
+                            
+                            <small>
+                                <strong>Confidence:</strong> 
+                                @assertion.Confidence.ToString("P0")
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <sl-badge variant="@(assertion.Epistemic switch {
+                            EpistemicCategory.Observed => "success",
+                            EpistemicCategory.Believed => "warning",
+                            EpistemicCategory.Inferred => "primary",
+                            _ => "neutral"
+                        })" pill>
+                            @assertion.Epistemic
+                        </sl-badge>
+                        
+                        <sl-button href="/assertions/details/@assertion.AssertionId" size="small" variant="primary" outline>
+                            Details
+                        </sl-button>
+                    </div>
+                </div>
+            </sl-card>
+        }
+    </div>
+}
+
+<div style="margin-top: 30px;">
+    <sl-button href="/universes" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Universes
+    </sl-button>
+</div>

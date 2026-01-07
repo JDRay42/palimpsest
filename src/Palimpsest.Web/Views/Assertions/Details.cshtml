@@ -1,0 +1,154 @@
+@using Palimpsest.Domain.Enums
+@model Assertion
+
+@{
+    ViewData["Title"] = "Assertion Details";
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/universes">Universes</sl-breadcrumb-item>
+        <sl-breadcrumb-item href="/assertions">Assertions</sl-breadcrumb-item>
+        <sl-breadcrumb-item>@Model.AssertionId.ToString().Substring(0, 8)</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Assertion Details</h2>
+    <sl-badge variant="@(Model.Epistemic switch {
+        EpistemicCategory.Observed => "success",
+        EpistemicCategory.Believed => "warning",
+        EpistemicCategory.Inferred => "primary",
+        _ => "neutral"
+    })" pill>
+        @Model.Epistemic
+    </sl-badge>
+</div>
+
+<sl-card style="margin-bottom: 20px;">
+    <h3>Assertion</h3>
+    <p style="font-size: 18px; margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 5px;">
+        @if (Model.SubjectEntity != null)
+        {
+            <strong>@Model.SubjectEntity.CanonicalName</strong>
+        }
+        @Model.Predicate
+        @if (Model.ObjectEntity != null)
+        {
+            <strong>@Model.ObjectEntity.CanonicalName</strong>
+        }
+        else if (!string.IsNullOrEmpty(Model.ObjectLiteral))
+        {
+            @Model.ObjectLiteral
+        }
+    </p>
+</sl-card>
+
+<sl-tab-group>
+    <sl-tab slot="nav" panel="overview">Overview</sl-tab>
+    <sl-tab slot="nav" panel="entities">Related Entities</sl-tab>
+    <sl-tab slot="nav" panel="context">Context</sl-tab>
+
+    <sl-tab-panel name="overview">
+        <sl-card style="margin-top: 20px;">
+            <h3>Assertion Details</h3>
+            
+            <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; margin-top: 20px;">
+                <dt><strong>Category</strong></dt>
+                <dd>@Model.Epistemic</dd>
+                
+                <dt><strong>Confidence</strong></dt>
+                <dd>
+                    @Model.Confidence.ToString("P1")
+                    <sl-progress-bar value="@((int)(Model.Confidence * 100))" style="margin-top: 5px;"></sl-progress-bar>
+                </dd>
+                
+                <dt><strong>Time Scope</strong></dt>
+                <dd>@Model.TimeScopeKind</dd>
+                
+                <dt><strong>Assertion ID</strong></dt>
+                <dd><code style="font-size: 12px;">@Model.AssertionId</code></dd>
+                
+                <dt><strong>Created</strong></dt>
+                <dd>@Model.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</dd>
+            </dl>
+        </sl-card>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="entities">
+        <div style="padding: 20px;">
+            <div style="display: grid; gap: 15px;">
+                @if (Model.SubjectEntity != null)
+                {
+                    <sl-card>
+                        <div slot="header">
+                            <strong>Subject Entity</strong>
+                        </div>
+                        <p><strong>@Model.SubjectEntity.CanonicalName</strong></p>
+                        <p style="color: #666;">Type: @Model.SubjectEntity.EntityType</p>
+                        <div slot="footer">
+                            <sl-button href="/entities/details/@Model.SubjectEntityId" variant="primary" outline style="width: 100%;">
+                                View Entity
+                            </sl-button>
+                        </div>
+                    </sl-card>
+                }
+                
+                @if (Model.ObjectEntity != null)
+                {
+                    <sl-card>
+                        <div slot="header">
+                            <strong>Object Entity</strong>
+                        </div>
+                        <p><strong>@Model.ObjectEntity.CanonicalName</strong></p>
+                        <p style="color: #666;">Type: @Model.ObjectEntity.EntityType</p>
+                        <div slot="footer">
+                            <sl-button href="/entities/details/@Model.ObjectEntityId" variant="primary" outline style="width: 100%;">
+                                View Entity
+                            </sl-button>
+                        </div>
+                    </sl-card>
+                }
+            </div>
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="context">
+        <div style="padding: 20px;">
+            @if (Model.EvidenceSegment != null)
+            {
+                <sl-card>
+                    <div slot="header">
+                        <strong>Source Segment</strong>
+                    </div>
+                    <p>@Model.EvidenceSegment.Text</p>
+                    @if (Model.EvidenceSegment.Version?.Document != null)
+                    {
+                        <p style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <small>
+                                <strong>Document:</strong> 
+                                <a href="/documents/details/@Model.EvidenceSegment.Version.DocumentId">
+                                    @Model.EvidenceSegment.Version.Document.Title
+                                </a>
+                            </small>
+                        </p>
+                    }
+                </sl-card>
+            }
+            else
+            {
+                <sl-alert variant="warning" open>
+                    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                    No source segment information available.
+                </sl-alert>
+            }
+        </div>
+    </sl-tab-panel>
+</sl-tab-group>
+
+<div style="margin-top: 30px;">
+    <sl-button href="/assertions" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Assertions
+    </sl-button>
+</div>

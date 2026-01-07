@@ -1,0 +1,69 @@
+@model Palimpsest.Domain.Entities.Entity
+
+@{
+    ViewData["Title"] = "Delete Entity";
+    var mentionCount = ViewBag.MentionCount as int? ?? 0;
+}
+
+<h2>Delete Entity</h2>
+
+<sl-alert variant="warning" open style="margin-bottom: 20px;">
+    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+    <strong>Warning</strong>
+    <p style="margin: 10px 0 0 0;">
+        You are about to delete this entity. This action cannot be undone.
+    </p>
+</sl-alert>
+
+<sl-card style="margin-bottom: 20px;">
+    <div slot="header">
+        <strong>Entity to Delete</strong>
+    </div>
+
+    <dl style="display: grid; grid-template-columns: auto 1fr; gap: 10px 20px;">
+        <dt style="font-weight: bold;">Canonical Name:</dt>
+        <dd>@Model.CanonicalName</dd>
+
+        <dt style="font-weight: bold;">Entity Type:</dt>
+        <dd>@Model.EntityType</dd>
+
+        <dt style="font-weight: bold;">Created:</dt>
+        <dd>@Model.CreatedAt.ToLocalTime().ToString("MMM d, yyyy h:mm tt")</dd>
+    </dl>
+
+    @if (mentionCount > 0)
+    {
+        <sl-alert variant="danger" open style="margin-top: 20px;">
+            <sl-icon slot="icon" name="exclamation-octagon"></sl-icon>
+            <strong>Impact</strong>
+            <p style="margin: 10px 0 0 0;">
+                This entity has <strong>@mentionCount entity mention(s)</strong> linked to it.
+                These mentions will be unlinked and marked as unresolved.
+            </p>
+        </sl-alert>
+    }
+
+    <div slot="footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <sl-button variant="default" href="/entities/details/@Model.EntityId">
+            <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+            Cancel
+        </sl-button>
+
+        <form method="post" asp-action="Delete" asp-route-id="@Model.EntityId" style="margin: 0;">
+            @Html.AntiForgeryToken()
+            <sl-button variant="danger" type="submit">
+                <sl-icon slot="prefix" name="trash"></sl-icon>
+                Delete Entity
+            </sl-button>
+        </form>
+    </div>
+</sl-card>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <sl-alert variant="danger" open closable style="margin-top: 20px;">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <strong>Error</strong>
+        <p style="margin: 10px 0 0 0;">@TempData["ErrorMessage"]</p>
+    </sl-alert>
+}

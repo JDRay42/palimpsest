@@ -1,0 +1,383 @@
+@using Palimpsest.Domain.Enums
+@using Palimpsest.Domain.Entities
+@model Entity
+
+@{
+    ViewData["Title"] = Model.CanonicalName;
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/universes">Universes</sl-breadcrumb-item>
+        <sl-breadcrumb-item href="/entities">Entities</sl-breadcrumb-item>
+        <sl-breadcrumb-item>@Model.CanonicalName</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>@Model.CanonicalName</h2>
+    <sl-badge variant="@(Model.EntityType switch {
+        EntityType.Person => "primary",
+        EntityType.Place => "success",
+        EntityType.Object => "warning",
+        EntityType.Org => "info",
+        EntityType.Concept => "neutral",
+        EntityType.EventLike => "danger",
+        _ => "neutral"
+    })" pill>
+        @Model.EntityType
+    </sl-badge>
+</div>
+
+<sl-tab-group>
+    <sl-tab slot="nav" panel="overview">Overview</sl-tab>
+    <sl-tab slot="nav" panel="aliases">Aliases</sl-tab>
+    <sl-tab slot="nav" panel="mentions">Mentions</sl-tab>
+    <sl-tab slot="nav" panel="assertions">Related Assertions</sl-tab>
+
+    <sl-tab-panel name="overview">
+        <sl-card style="margin-top: 20px;">
+            <h3>Entity Details</h3>
+            
+            <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; margin-top: 20px;">
+                <dt><strong>Canonical Name</strong></dt>
+                <dd>@Model.CanonicalName</dd>
+                
+                <dt><strong>Type</strong></dt>
+                <dd>@Model.EntityType</dd>
+                
+                <dt><strong>Entity ID</strong></dt>
+                <dd><code style="font-size: 12px;">@Model.EntityId</code></dd>
+                
+                @if (Model.Aliases?.Any() == true)
+                {
+                    <dt><strong>Known Aliases</strong></dt>
+                    <dd>@Model.Aliases.Count() alias(es)</dd>
+                }
+            </dl>
+        </sl-card>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="aliases">
+        <div style="padding: 20px;">
+            @if (Model.Aliases?.Any() == true)
+            {
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                    @foreach (var alias in Model.Aliases)
+                    {
+                        <sl-card>
+                            <strong>@alias.Alias</strong>
+                            <p style="margin: 5px 0 0 0; color: #666;">
+                                <small>Created: @alias.CreatedAt.ToString("MMM d, yyyy")</small>
+                            </p>
+                        </sl-card>
+                    }
+                </div>
+            }
+            else
+            {
+                <sl-alert variant="warning" open>
+                    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                    No aliases found for this entity.
+                </sl-alert>
+            }
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="mentions">
+        <div style="padding: 20px;">
+            @if (ViewBag.Mentions != null && ((List<EntityMention>)ViewBag.Mentions).Any())
+            {
+                <sl-alert variant="primary" open closable style="margin-bottom: 20px;">
+                    <sl-icon slot="icon" name="info-circle"></sl-icon>
+                    <strong>Mention Validation</strong>
+                    <p style="margin: 10px 0 0 0;">
+                        Review detected mentions of this entity. You can approve correct detections, reject false positives, or remap to a different entity.
+                    </p>
+                </sl-alert>
+
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    @foreach (var mention in (List<EntityMention>)ViewBag.Mentions)
+                    {
+                        <sl-card>
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div style="flex: 1;">
+                                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                        <strong style="font-size: 1.1em;">@mention.SurfaceForm</strong>
+                                        <sl-badge variant="@(mention.ResolutionStatus switch {
+                                            ResolutionStatus.Resolved => "success",
+                                            ResolutionStatus.Candidate => "warning",
+                                            ResolutionStatus.Unresolved => "neutral",
+                                            _ => "neutral"
+                                        })" pill>
+                                            @mention.ResolutionStatus
+                                        </sl-badge>
+                                        @if (mention.Confidence > 0)
+                                        {
+                                            <sl-badge variant="@(mention.Confidence > 0.8 ? "success" : mention.Confidence > 0.5 ? "warning" : "danger")">
+                                                @((mention.Confidence * 100).ToString("F0"))% confident
+                                            </sl-badge>
+                                        }
+                                    </div>
+                                    
+                                    @if (mention.Segment != null)
+                                    {
+                                        <p style="color: #666; margin: 10px 0; font-style: italic; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+                                            "@mention.Segment.Text"
+                                        </p>
+                                    }
+
+                                    <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #999;">
+                                        <sl-icon name="calendar"></sl-icon> Detected: @mention.CreatedAt.ToString("MMM d, yyyy HH:mm")
+                                    </p>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; margin-left: 20px;">
+                                    @if (mention.ResolutionStatus != ResolutionStatus.Resolved)
+                                    {
+                                        <sl-button 
+                                            variant="success" 
+                                            size="small"
+                                            onclick="updateMentionResolution('@mention.MentionId', 'approve', null)">
+                                            <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                                            Approve
+                                        </sl-button>
+                                    }
+                                    
+                                    <sl-button 
+                                        variant="danger" 
+                                        size="small"
+                                        onclick="updateMentionResolution('@mention.MentionId', 'reject', null)">
+                                        <sl-icon slot="prefix" name="x-circle"></sl-icon>
+                                        Reject
+                                    </sl-button>
+                                    
+                                    <sl-button 
+                                        variant="default" 
+                                        size="small"
+                                        onclick="showRemapDialog('@mention.MentionId', '@mention.SurfaceForm')">
+                                        <sl-icon slot="prefix" name="arrow-left-right"></sl-icon>
+                                        Remap
+                                    </sl-button>
+                                </div>
+                            </div>
+                        </sl-card>
+                    }
+                </div>
+            }
+            else
+            {
+                <sl-alert variant="warning" open>
+                    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                    No mentions found for this entity yet. Mentions will appear here after documents are ingested and analyzed.
+                </sl-alert>
+            }
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="assertions">
+        <div style="padding: 20px;">
+            <p>Related assertions will appear here after document ingestion.</p>
+        </div>
+    </sl-tab-panel>
+</sl-tab-group>
+
+<div style="margin-top: 30px; display: flex; gap: 10px;">
+    <sl-button href="/entities" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Entities
+    </sl-button>
+    <sl-button href="/entities/edit/@Model.EntityId" variant="primary">
+        <sl-icon slot="prefix" name="pencil"></sl-icon>
+        Edit Entity
+    </sl-button>
+    <sl-button href="/entities/delete/@Model.EntityId" variant="danger">
+        <sl-icon slot="prefix" name="trash"></sl-icon>
+        Delete Entity
+    </sl-button>
+</div>
+
+<!-- Remap Dialog -->
+<sl-dialog label="Remap Mention" id="remapDialog" style="--width: 500px;">
+    <form id="remapForm">
+        <p id="remapSurfaceForm" style="margin-bottom: 20px; color: #666;"></p>
+        
+        <sl-input 
+            id="remapSearch" 
+            placeholder="Search for entity to remap to..."
+            style="margin-bottom: 15px;">
+            <sl-icon name="search" slot="prefix"></sl-icon>
+        </sl-input>
+
+        <div id="remapResults" style="max-height: 300px; overflow-y: auto; display: none;">
+            <!-- Search results will appear here -->
+        </div>
+
+        <input type="hidden" id="remapMentionId" />
+        <input type="hidden" id="remapTargetEntityId" />
+    </form>
+
+    <div slot="footer" style="display: flex; justify-content: space-between; width: 100%;">
+        <sl-button variant="default" onclick="closeRemapDialog()">Cancel</sl-button>
+        <sl-button variant="primary" id="remapConfirmBtn" disabled onclick="confirmRemap()">
+            Remap Mention
+        </sl-button>
+    </div>
+</sl-dialog>
+
+@section Scripts {
+    <script>
+        // Update mention resolution (approve, reject)
+        async function updateMentionResolution(mentionId, action, targetEntityId) {
+            try {
+                const response = await fetch('/entities/update-mention-resolution', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify({
+                        mentionId: mentionId,
+                        action: action,
+                        targetEntityId: targetEntityId
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success notification
+                    const alert = document.createElement('sl-alert');
+                    alert.variant = 'success';
+                    alert.closable = true;
+                    alert.duration = 3000;
+                    alert.innerHTML = `
+                        <sl-icon slot="icon" name="check-circle"></sl-icon>
+                        <strong>Success</strong>
+                        ${result.message}
+                    `;
+                    document.body.appendChild(alert);
+                    alert.toast();
+
+                    // Reload the page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error(result.message || 'Failed to update mention');
+                }
+            } catch (error) {
+                console.error('Error updating mention:', error);
+                const alert = document.createElement('sl-alert');
+                alert.variant = 'danger';
+                alert.closable = true;
+                alert.innerHTML = `
+                    <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+                    <strong>Error</strong>
+                    ${error.message}
+                `;
+                document.body.appendChild(alert);
+                alert.toast();
+            }
+        }
+
+        // Show remap dialog
+        function showRemapDialog(mentionId, surfaceForm) {
+            document.getElementById('remapMentionId').value = mentionId;
+            document.getElementById('remapSurfaceForm').textContent = `Remapping mention: "${surfaceForm}"`;
+            document.getElementById('remapSearch').value = '';
+            document.getElementById('remapResults').style.display = 'none';
+            document.getElementById('remapResults').innerHTML = '';
+            document.getElementById('remapTargetEntityId').value = '';
+            document.getElementById('remapConfirmBtn').disabled = true;
+            document.getElementById('remapDialog').show();
+        }
+
+        // Close remap dialog
+        function closeRemapDialog() {
+            document.getElementById('remapDialog').hide();
+        }
+
+        // Confirm remap action
+        async function confirmRemap() {
+            const mentionId = document.getElementById('remapMentionId').value;
+            const targetEntityId = document.getElementById('remapTargetEntityId').value;
+            
+            if (!targetEntityId) {
+                alert('Please select an entity to remap to.');
+                return;
+            }
+
+            closeRemapDialog();
+            await updateMentionResolution(mentionId, 'remap', targetEntityId);
+        }
+
+        // Search for entities to remap to
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('remapSearch');
+            let searchTimeout;
+
+            searchInput?.addEventListener('sl-input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim();
+
+                if (query.length < 2) {
+                    document.getElementById('remapResults').style.display = 'none';
+                    return;
+                }
+
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`/entities/search?query=${encodeURIComponent(query)}`);
+                        const html = await response.text();
+                        
+                        // Parse the HTML to extract entity data
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const entityCards = doc.querySelectorAll('sl-card[data-entity-id]');
+
+                        if (entityCards.length === 0) {
+                            document.getElementById('remapResults').innerHTML = '<p style="padding: 10px; color: #666;">No entities found.</p>';
+                            document.getElementById('remapResults').style.display = 'block';
+                            return;
+                        }
+
+                        let resultsHtml = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+                        entityCards.forEach(card => {
+                            const entityId = card.getAttribute('data-entity-id');
+                            const name = card.querySelector('strong')?.textContent || 'Unknown';
+                            const type = card.querySelector('sl-badge')?.textContent?.trim() || 'Unknown';
+                            
+                            resultsHtml += `
+                                <sl-card style="cursor: pointer;" onclick="selectRemapEntity('${entityId}', '${name}')">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <strong>${name}</strong>
+                                        <sl-badge>${type}</sl-badge>
+                                    </div>
+                                </sl-card>
+                            `;
+                        });
+                        resultsHtml += '</div>';
+
+                        document.getElementById('remapResults').innerHTML = resultsHtml;
+                        document.getElementById('remapResults').style.display = 'block';
+                    } catch (error) {
+                        console.error('Search error:', error);
+                    }
+                }, 300);
+            });
+        });
+
+        // Select entity for remapping
+        function selectRemapEntity(entityId, name) {
+            document.getElementById('remapTargetEntityId').value = entityId;
+            document.getElementById('remapConfirmBtn').disabled = false;
+            
+            // Highlight selected entity
+            document.querySelectorAll('#remapResults sl-card').forEach(card => {
+                card.style.border = '1px solid #ddd';
+            });
+            event.currentTarget.style.border = '2px solid #667eea';
+        }
+    </script>
+}

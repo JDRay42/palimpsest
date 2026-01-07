@@ -1,0 +1,116 @@
+@using Palimpsest.Domain.Enums
+@model IEnumerable<Entity>
+
+@{
+    ViewData["Title"] = "Entities";
+}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>Entities</h2>
+    @if (ViewBag.SearchQuery != null)
+    {
+        <sl-badge variant="primary" pill>
+            Search: @ViewBag.SearchQuery
+        </sl-badge>
+    }
+</div>
+
+<div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <sl-button variant="primary" href="/entities/create">
+        <sl-icon slot="prefix" name="plus-circle"></sl-icon>
+        Create Entity
+    </sl-button>
+    <sl-button variant="default" href="/entities/import">
+        <sl-icon slot="prefix" name="upload"></sl-icon>
+        Import Entities
+    </sl-button>
+</div>
+
+<sl-card style="margin-bottom: 20px;">
+    <form method="get" asp-action="Search" style="display: flex; gap: 10px;">
+        <sl-input 
+            name="query" 
+            placeholder="Search entities by name..."
+            value="@ViewBag.SearchQuery"
+            style="flex: 1;">
+            <sl-icon name="search" slot="prefix"></sl-icon>
+        </sl-input>
+        <sl-button type="submit" variant="primary">Search</sl-button>
+        @if (ViewBag.SearchQuery != null)
+        {
+            <sl-button href="/entities" variant="default">Clear</sl-button>
+        }
+    </form>
+</sl-card>
+
+@if (!Model.Any())
+{
+    <sl-card style="margin: 40px 0;">
+        <div style="text-align: center; padding: 40px;">
+            <sl-icon name="people" style="font-size: 64px; color: #667eea; margin-bottom: 20px;"></sl-icon>
+            @if (ViewBag.SearchQuery != null)
+            {
+                <h3>No Results Found</h3>
+                <p>No entities match your search query "@ViewBag.SearchQuery".</p>
+            }
+            else
+            {
+                <h3>No Entities Yet</h3>
+                <p>Entities will appear here after documents are ingested and analyzed.</p>
+            }
+        </div>
+    </sl-card>
+}
+else
+{
+    <sl-alert variant="primary" open style="margin-bottom: 20px;">
+        <sl-icon slot="icon" name="info-circle"></sl-icon>
+        <strong>@Model.Count() entities found</strong>
+    </sl-alert>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+        @foreach (var entity in Model)
+        {
+            <sl-card data-entity-id="@entity.EntityId">
+                <div slot="header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>@entity.CanonicalName</strong>
+                    <sl-badge variant="@(entity.EntityType switch {
+                        EntityType.Person => "primary",
+                        EntityType.Place => "success",
+                        EntityType.Object => "warning",
+                        EntityType.Org => "info",
+                        EntityType.Concept => "neutral",
+                        EntityType.EventLike => "danger",
+                        _ => "neutral"
+                    })" pill>
+                        @entity.EntityType
+                    </sl-badge>
+                </div>
+                
+                @if (entity.Aliases?.Any() == true)
+                {
+                    <p style="margin: 10px 0;">
+                        <small><strong>Aliases:</strong> @string.Join(", ", entity.Aliases.Select(a => a.Alias))</small>
+                    </p>
+                }
+                
+                <p style="margin: 10px 0;">
+                    <small><strong>Entity ID:</strong> <code style="font-size: 11px;">@entity.EntityId.ToString().Substring(0, 8)...</code></small>
+                </p>
+                
+                <div slot="footer">
+                    <sl-button href="/entities/details/@entity.EntityId" variant="primary" outline style="width: 100%;">
+                        View Details
+                    </sl-button>
+                </div>
+            </sl-card>
+        }
+    </div>
+}
+
+<div style="margin-top: 30px;">
+    <sl-button href="/universes" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Universes
+    </sl-button>
+</div>

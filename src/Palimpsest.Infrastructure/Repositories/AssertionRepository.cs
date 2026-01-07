@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Assertion operations.
+/// Assertions are append-only; no update or delete operations.
+/// </summary>
 public class AssertionRepository : IAssertionRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AssertionRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public AssertionRepository(PalimpsestDbContext context)
     {
         _context = context;

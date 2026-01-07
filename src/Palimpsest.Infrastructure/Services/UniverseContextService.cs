@@ -13,6 +13,10 @@ public class UniverseContextService : IUniverseContextService
     private const string UniverseIdSessionKey = "ActiveUniverseId";
     private readonly IHttpContextAccessor _httpContextAccessor;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UniverseContextService"/> class.
+    /// </summary>
+    /// <param name="httpContextAccessor">The HTTP context accessor for session access.</param>
     public UniverseContextService(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;

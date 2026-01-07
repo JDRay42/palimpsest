@@ -100,6 +100,8 @@ public class UniversesController : Controller
         {
             return NotFound();
         }
+        
+        ViewBag.ActiveUniverseId = _universeContext.GetActiveUniverseId();
         return View(universe);
     }
 }

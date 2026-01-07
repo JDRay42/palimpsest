@@ -1,0 +1,91 @@
+@using Palimpsest.Domain.Enums
+@model Palimpsest.Domain.Entities.Entity
+
+@{
+    ViewData["Title"] = "Edit Entity";
+    var aliases = ViewBag.Aliases as List<string> ?? new List<string>();
+    var aliasesText = string.Join("\n", aliases);
+}
+
+<h2>Edit Entity</h2>
+
+<form method="post" asp-action="Edit" asp-route-id="@Model.EntityId">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="EntityId" />
+    
+    <sl-card style="margin-bottom: 20px;">
+        <div slot="header">
+            <strong>Entity Information</strong>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div>
+                <label for="canonicalName">Canonical Name <span style="color: red;">*</span></label>
+                <sl-input 
+                    id="canonicalName"
+                    name="CanonicalName" 
+                    value="@Model.CanonicalName"
+                    required
+                    style="margin-top: 5px;">
+                </sl-input>
+                <span asp-validation-for="CanonicalName" style="color: red; font-size: 0.875rem;"></span>
+            </div>
+
+            <div>
+                <label for="entityType">Entity Type</label>
+                <sl-select 
+                    id="entityType"
+                    name="EntityType" 
+                    value="@Model.EntityType.ToString()"
+                    style="margin-top: 5px;">
+                    <sl-option value="Person">Person / Character</sl-option>
+                    <sl-option value="Place">Place / Location</sl-option>
+                    <sl-option value="Org">Organization / Faction</sl-option>
+                    <sl-option value="Object">Object / Item</sl-option>
+                    <sl-option value="EventLike">Event</sl-option>
+                </sl-select>
+            </div>
+
+            <div>
+                <label for="aliases">Aliases</label>
+                <sl-textarea
+                    id="aliases"
+                    name="aliasesText"
+                    value="@aliasesText"
+                    placeholder="Enter aliases (one per line or comma-separated)"
+                    rows="5"
+                    style="margin-top: 5px;">@aliasesText</sl-textarea>
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    Alternative names, nicknames, or titles. Separate with commas or newlines.
+                </small>
+            </div>
+        </div>
+
+        <div slot="footer" style="display: flex; justify-content: space-between;">
+            <sl-button variant="default" href="/entities/details/@Model.EntityId">
+                <sl-icon slot="prefix" name="x-circle"></sl-icon>
+                Cancel
+            </sl-button>
+            <sl-button variant="primary" type="submit">
+                <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                Save Changes
+            </sl-button>
+        </div>
+    </sl-card>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            form?.addEventListener('submit', async (e) => {
+                await Promise.all([
+                    customElements.whenDefined('sl-input'),
+                    customElements.whenDefined('sl-select'),
+                    customElements.whenDefined('sl-textarea')
+                ]);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,112 @@
+@using Palimpsest.Domain.Enums
+@model Palimpsest.Domain.Entities.Entity
+
+@{
+    ViewData["Title"] = "Create Entity";
+}
+
+<h2>Create New Entity</h2>
+
+<sl-alert variant="primary" open style="margin-bottom: 20px;">
+    <sl-icon slot="icon" name="info-circle"></sl-icon>
+    <strong>Create Entity</strong>
+    <p style="margin: 10px 0 0 0;">
+        Manually create an entity (character, place, organization, etc.) for your universe.
+        This is useful for pre-loading character lists before document ingestion.
+    </p>
+</sl-alert>
+
+<form method="post" asp-action="Create">
+    @Html.AntiForgeryToken()
+    
+    <sl-card style="margin-bottom: 20px;">
+        <div slot="header">
+            <strong>Entity Information</strong>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div>
+                <label for="canonicalName">Canonical Name <span style="color: red;">*</span></label>
+                <sl-input 
+                    id="canonicalName"
+                    name="CanonicalName" 
+                    placeholder="e.g., Celestina Maria Foscari"
+                    value="@Model?.CanonicalName"
+                    required
+                    style="margin-top: 5px;">
+                </sl-input>
+                <span asp-validation-for="CanonicalName" style="color: red; font-size: 0.875rem;"></span>
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    The primary/preferred name for this entity
+                </small>
+            </div>
+
+            <div>
+                <label for="entityType">Entity Type <span style="color: red;">*</span></label>
+                <sl-select 
+                    id="entityType"
+                    name="EntityType" 
+                    value="@(Model?.EntityType.ToString() ?? "Person")"
+                    style="margin-top: 5px;">
+                    <sl-option value="Person">Person / Character</sl-option>
+                    <sl-option value="Place">Place / Location</sl-option>
+                    <sl-option value="Org">Organization / Faction</sl-option>
+                    <sl-option value="Object">Object / Item</sl-option>
+                    <sl-option value="EventLike">Event</sl-option>
+                </sl-select>
+                <span asp-validation-for="EntityType" style="color: red; font-size: 0.875rem;"></span>
+            </div>
+
+            <div>
+                <label for="aliases">Aliases (Optional)</label>
+                <sl-textarea
+                    id="aliases"
+                    name="aliasesText"
+                    placeholder="Enter aliases (one per line or comma-separated)&#10;e.g., Celeste, The Lady Foscari, Maria"
+                    rows="5"
+                    style="margin-top: 5px;">@ViewBag.Aliases</sl-textarea>
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    Alternative names, nicknames, or titles. Separate with commas or newlines.
+                </small>
+            </div>
+        </div>
+
+        <div slot="footer" style="display: flex; justify-content: space-between;">
+            <sl-button variant="default" href="/entities">
+                <sl-icon slot="prefix" name="x-circle"></sl-icon>
+                Cancel
+            </sl-button>
+            <sl-button variant="primary" type="submit">
+                <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                Create Entity
+            </sl-button>
+        </div>
+    </sl-card>
+</form>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <sl-alert variant="danger" open closable style="margin-top: 20px;">
+        <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+        <strong>Error</strong>
+        <p style="margin: 10px 0 0 0;">@TempData["ErrorMessage"]</p>
+    </sl-alert>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Ensure Shoelace components participate in form submission
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            form?.addEventListener('submit', async (e) => {
+                // Wait for custom elements to be defined
+                await Promise.all([
+                    customElements.whenDefined('sl-input'),
+                    customElements.whenDefined('sl-select'),
+                    customElements.whenDefined('sl-textarea')
+                ]);
+            });
+        });
+    </script>
+}

@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Entity operations within a universe.
+/// Provides data access for entities including search and alias support.
+/// </summary>
 public class EntityRepository : IEntityRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntityRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public EntityRepository(PalimpsestDbContext context)
     {
         _context = context;
@@ -33,6 +41,19 @@ public class EntityRepository : IEntityRepository
     {
         return await _context.Entities
             .FirstOrDefaultAsync(e => e.UniverseId == universeId && e.CanonicalName == canonicalName, cancellationToken);
+    }
+
+    public async Task<IEnumerable<Entity>> SearchByNameAsync(Guid universeId, string query, CancellationToken cancellationToken = default)
+    {
+        var normalizedQuery = query.ToLower();
+        return await _context.Entities
+            .Where(e => e.UniverseId == universeId && 
+                       (e.CanonicalName.ToLower().Contains(normalizedQuery) ||
+                        e.Aliases.Any(a => a.AliasNorm.Contains(normalizedQuery))))
+            .Include(e => e.Aliases)
+            .OrderBy(e => e.CanonicalName)
+            .Take(50)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<Entity> CreateAsync(Entity entity, CancellationToken cancellationToken = default)

@@ -1,0 +1,138 @@
+@model Universe
+
+@{
+    ViewData["Title"] = $"{Model.Name} - Details";
+}
+
+<div style="margin-bottom: 20px;">
+    <sl-breadcrumb>
+        <sl-breadcrumb-item href="/universes">Universes</sl-breadcrumb-item>
+        <sl-breadcrumb-item>@Model.Name</sl-breadcrumb-item>
+    </sl-breadcrumb>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h2>@Model.Name</h2>
+    <div style="display: flex; gap: 10px;">
+        @{
+            var activeUniverseId = ViewBag.ActiveUniverseId as Guid?;
+            var isActive = activeUniverseId.HasValue && activeUniverseId.Value == Model.UniverseId;
+        }
+        
+        @if (!isActive)
+        {
+            <form method="post" asp-controller="Universes" asp-action="SetActive" asp-route-id="@Model.UniverseId">
+                @Html.AntiForgeryToken()
+                <sl-button type="submit" variant="primary">
+                    <sl-icon slot="prefix" name="check-circle"></sl-icon>
+                    Set as Active
+                </sl-button>
+            </form>
+        }
+        else
+        {
+            <sl-badge variant="success" pill>
+                <sl-icon name="check-circle" slot="prefix"></sl-icon>
+                Active Universe
+            </sl-badge>
+        }
+    </div>
+</div>
+
+<sl-tab-group>
+    <sl-tab slot="nav" panel="overview">Overview</sl-tab>
+    <sl-tab slot="nav" panel="documents">Documents</sl-tab>
+    <sl-tab slot="nav" panel="entities">Entities</sl-tab>
+    <sl-tab slot="nav" panel="assertions">Assertions</sl-tab>
+    <sl-tab slot="nav" panel="questionable">Questionable Items</sl-tab>
+
+    <sl-tab-panel name="overview">
+        <sl-card style="margin-top: 20px;">
+            <h3>Universe Details</h3>
+            
+            <dl style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; margin-top: 20px;">
+                <dt><strong>Name</strong></dt>
+                <dd>@Model.Name</dd>
+                
+                @if (!string.IsNullOrEmpty(Model.AuthorName))
+                {
+                    <dt><strong>Author</strong></dt>
+                    <dd>@Model.AuthorName</dd>
+                }
+                
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <dt><strong>Description</strong></dt>
+                    <dd>@Model.Description</dd>
+                }
+                
+                <dt><strong>Created</strong></dt>
+                <dd>@Model.CreatedAt.ToString("MMMM d, yyyy 'at' h:mm tt")</dd>
+                
+                <dt><strong>Universe ID</strong></dt>
+                <dd><code style="font-size: 12px;">@Model.UniverseId</code></dd>
+            </dl>
+        </sl-card>
+        
+        <sl-card style="margin-top: 20px;">
+            <h3>Quick Actions</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                <sl-button href="/documents/upload?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
+                    <sl-icon slot="prefix" name="file-earmark-plus"></sl-icon>
+                    Add Document
+                </sl-button>
+                
+                <sl-button href="/entities?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
+                    <sl-icon slot="prefix" name="person"></sl-icon>
+                    View Entities
+                </sl-button>
+                
+                <sl-button href="/assertions?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
+                    <sl-icon slot="prefix" name="diagram-3"></sl-icon>
+                    View Assertions
+                </sl-button>
+                
+                <sl-button href="/questionable?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
+                    <sl-icon slot="prefix" name="exclamation-triangle"></sl-icon>
+                    Questionable Items
+                </sl-button>
+            </div>
+        </sl-card>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="documents">
+        <div style="padding: 20px;">
+            <p>Documents for this universe will be displayed here.</p>
+            <sl-button href="/documents/upload?universeId=@Model.UniverseId" variant="primary">
+                <sl-icon slot="prefix" name="file-earmark-plus"></sl-icon>
+                Add Document
+            </sl-button>
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="entities">
+        <div style="padding: 20px;">
+            <p>Entities extracted from documents will be displayed here.</p>
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="assertions">
+        <div style="padding: 20px;">
+            <p>Assertions (facts) about entities will be displayed here.</p>
+        </div>
+    </sl-tab-panel>
+
+    <sl-tab-panel name="questionable">
+        <div style="padding: 20px;">
+            <p>Items requiring review will be displayed here.</p>
+        </div>
+    </sl-tab-panel>
+</sl-tab-group>
+
+<div style="margin-top: 30px;">
+    <sl-button href="/universes" variant="default">
+        <sl-icon slot="prefix" name="arrow-left"></sl-icon>
+        Back to Universes
+    </sl-button>
+</div>

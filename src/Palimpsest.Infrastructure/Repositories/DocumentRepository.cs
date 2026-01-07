@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Document operations.
+/// Provides data access for documents within universes.
+/// </summary>
 public class DocumentRepository : IDocumentRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DocumentRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public DocumentRepository(PalimpsestDbContext context)
     {
         _context = context;

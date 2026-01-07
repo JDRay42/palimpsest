@@ -9,6 +9,11 @@ namespace Palimpsest.Infrastructure.Data;
 /// </summary>
 public class PalimpsestDbContextFactory : IDesignTimeDbContextFactory<PalimpsestDbContext>
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="PalimpsestDbContext"/> for design-time operations.
+    /// </summary>
+    /// <param name="args">Command-line arguments.</param>
+    /// <returns>A configured <see cref="PalimpsestDbContext"/> instance.</returns>
     public PalimpsestDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<PalimpsestDbContext>();

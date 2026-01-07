@@ -5,10 +5,18 @@ using Palimpsest.Infrastructure.Data;
 
 namespace Palimpsest.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for Universe operations.
+/// Provides data access for universes in the system.
+/// </summary>
 public class UniverseRepository : IUniverseRepository
 {
     private readonly PalimpsestDbContext _context;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UniverseRepository"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     public UniverseRepository(PalimpsestDbContext context)
     {
         _context = context;
