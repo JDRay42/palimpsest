@@ -151,9 +151,12 @@ public class EntitiesController : Controller
                     Alias = aliasName,
                     AliasNorm = aliasName.ToLowerInvariant(),
                     CreatedAt = DateTime.UtcNow
-                });
+                }).ToList();
                 
-                await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
+                foreach (var alias in aliasesToCreate)
+                {
+                    await _entityAliasRepository.CreateAsync(alias);
+                }
             }
 
             TempData["SuccessMessage"] = $"Entity '{entity.CanonicalName}' created successfully.";
@@ -282,9 +285,12 @@ public class EntitiesController : Controller
                 Alias = aliasName,
                 AliasNorm = aliasName.ToLowerInvariant(),
                 CreatedAt = DateTime.UtcNow
-            });
+            }).ToList();
             
-            await Task.WhenAll(newAliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
+            foreach (var alias in newAliasesToCreate)
+            {
+                await _entityAliasRepository.CreateAsync(alias);
+            }
 
             TempData["SuccessMessage"] = $"Entity '{entity.CanonicalName}' updated successfully.";
             return RedirectToAction(nameof(Details), new { id = entity.EntityId });
@@ -457,9 +463,12 @@ public class EntitiesController : Controller
                                 Alias = aliasName,
                                 AliasNorm = aliasName.ToLowerInvariant(),
                                 CreatedAt = DateTime.UtcNow
-                            });
+                            }).ToList();
                             
-                            await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
+                            foreach (var alias in aliasesToCreate)
+                            {
+                                await _entityAliasRepository.CreateAsync(alias);
+                            }
                         }
 
                         imported++;
@@ -533,9 +542,12 @@ public class EntitiesController : Controller
                         Alias = aliasName,
                         AliasNorm = aliasName.ToLowerInvariant(),
                         CreatedAt = DateTime.UtcNow
-                    });
+                    }).ToList();
                     
-                    await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
+                    foreach (var alias in aliasesToCreate)
+                    {
+                        await _entityAliasRepository.CreateAsync(alias);
+                    }
 
                     imported++;
                 }
