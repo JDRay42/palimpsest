@@ -1,0 +1,309 @@
+/* ============================================================================
+   Palimpsest - Manuscript Archive Theme
+   
+   A warm, literary aesthetic inspired by writers' archives and libraries.
+   Perfect for authors working with complex fictional universes.
+   ============================================================================ */
+
+:root {
+  /* ========== COLOR PALETTE ========== */
+  
+  /* Primary Brand Colors */
+  --sl-color-primary-50: #F5F1E8;
+  --sl-color-primary-100: #EBE6D8;
+  --sl-color-primary-200: #D4C4A8;
+  --sl-color-primary-300: #BDA878;
+  --sl-color-primary-400: #B89968;
+  --sl-color-primary-500: #A0845C;
+  --sl-color-primary-600: #8B7050;
+  --sl-color-primary-700: #6B5844;
+  --sl-color-primary-800: #4A4238;
+  --sl-color-primary-900: #3D3428;
+  
+  /* Neutral Base (warm grays) */
+  --sl-color-neutral-0: #FFFFFF;
+  --sl-color-neutral-50: #FAFAF8;
+  --sl-color-neutral-100: #F5F1E8;
+  --sl-color-neutral-150: #F0EDE7;
+  --sl-color-neutral-200: #E8E4D8;
+  --sl-color-neutral-300: #DDD9CC;
+  --sl-color-neutral-400: #B3A896;
+  --sl-color-neutral-500: #7A7066;
+  --sl-color-neutral-600: #5A524A;
+  --sl-color-neutral-700: #3E3835;
+  --sl-color-neutral-800: #2C2416;
+  --sl-color-neutral-900: #1A1410;
+  --sl-color-neutral-950: #0F0D0A;
+  
+  /* Semantic Colors */
+  --sl-color-success-600: #5A8F7B;
+  --sl-color-warning-600: #D4A574;
+  --sl-color-danger-600: #C85A54;
+  --sl-color-info-600: #4A8FB8;
+  
+  /* ========== TYPOGRAPHY ========== */
+  
+  --sl-font-serif: 'Crimson Text', serif;
+  --sl-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --sl-font-mono: 'Fira Code', 'Courier New', monospace;
+  
+  --sl-font-size-2xs: 10px;
+  --sl-font-size-xs: 12px;
+  --sl-font-size-sm: 13px;
+  --sl-font-size-base: 14px;
+  --sl-font-size-lg: 16px;
+  --sl-font-size-xl: 18px;
+  --sl-font-size-2xl: 20px;
+  --sl-font-size-3xl: 24px;
+  --sl-font-size-4xl: 28px;
+  --sl-font-size-5xl: 32px;
+  --sl-font-size-6xl: 36px;
+  --sl-font-size-7xl: 48px;
+  
+  --sl-font-weight-light: 300;
+  --sl-font-weight-normal: 400;
+  --sl-font-weight-semibold: 500;
+  --sl-font-weight-bold: 600;
+  --sl-font-weight-extrabold: 700;
+  
+  --sl-line-height-tight: 1.2;
+  --sl-line-height-snug: 1.375;
+  --sl-line-height-normal: 1.5;
+  --sl-line-height-relaxed: 1.6;
+  --sl-line-height-loose: 1.875;
+  
+  --sl-letter-spacing-tight: -0.01em;
+  --sl-letter-spacing-normal: 0;
+  --sl-letter-spacing-wide: 0.05em;
+  --sl-letter-spacing-wider: 0.1em;
+  
+  /* ========== SPACING ========== */
+  
+  --sl-spacing-3xs: 2px;
+  --sl-spacing-2xs: 4px;
+  --sl-spacing-xs: 8px;
+  --sl-spacing-sm: 12px;
+  --sl-spacing-md: 16px;
+  --sl-spacing-lg: 20px;
+  --sl-spacing-xl: 24px;
+  --sl-spacing-2xl: 32px;
+  --sl-spacing-3xl: 40px;
+  --sl-spacing-4xl: 48px;
+  
+  /* ========== BORDER RADIUS ========== */
+  
+  --sl-border-radius-small: 2px;
+  --sl-border-radius-medium: 4px;
+  --sl-border-radius-large: 8px;
+  --sl-border-radius-x-large: 12px;
+  --sl-border-radius-circle: 50%;
+  
+  /* ========== SHADOWS ========== */
+  
+  --sl-shadow-x-small: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --sl-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --sl-shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --sl-shadow-large: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --sl-shadow-x-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* ========== TRANSITIONS ========== */
+  
+  --sl-transition-x-slow: 1s;
+  --sl-transition-slow: 500ms;
+  --sl-transition-base: 250ms;
+  --sl-transition-fast: 150ms;
+  --sl-transition-x-fast: 75ms;
+  
+  /* ========== ENTITY TYPE COLORS ========== */
+  
+  --pl-entity-character: #D4A574;
+  --pl-entity-location: #5A8F7B;
+  --pl-entity-concept: #6B5B95;
+  --pl-entity-organization: #B89968;
+  --pl-entity-event: #C85A54;
+  --pl-entity-custom: #4A8FB8;
+}
+
+/* ============================================================================
+   COMPONENT OVERRIDES
+   ============================================================================ */
+
+/* Page Background */
+html,
+body {
+  background: linear-gradient(135deg, #F5F1E8 0%, #E8E4D8 100%);
+  background-attachment: fixed;
+  color: var(--sl-color-neutral-800);
+  font-family: var(--sl-font-sans);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sl-font-serif);
+  color: var(--sl-color-neutral-800);
+  font-weight: var(--sl-font-weight-bold);
+  letter-spacing: var(--sl-letter-spacing-tight);
+}
+
+h1 { font-size: var(--sl-font-size-7xl); }
+h2 { font-size: var(--sl-font-size-5xl); }
+h3 { font-size: var(--sl-font-size-4xl); }
+
+/* Shoelace Button Override */
+sl-button::part(base) {
+  font-weight: var(--sl-font-weight-semibold);
+  letter-spacing: var(--sl-letter-spacing-wide);
+  text-transform: uppercase;
+  border-radius: var(--sl-border-radius-small);
+  padding: 0.625rem 1.25rem;
+  font-size: var(--sl-font-size-sm);
+}
+
+sl-button[variant="primary"]::part(base) {
+  background-color: var(--sl-color-primary-400);
+  color: var(--sl-color-neutral-800);
+  border: none;
+}
+
+sl-button[variant="primary"]::part(base):hover {
+  background-color: var(--sl-color-primary-500);
+  box-shadow: var(--sl-shadow-medium);
+}
+
+sl-button[variant="default"]::part(base) {
+  background-color: transparent;
+  color: var(--sl-color-primary-400);
+  border: 1px solid var(--sl-color-primary-400);
+}
+
+sl-button[variant="default"]::part(base):hover {
+  background-color: rgba(184, 153, 104, 0.05);
+  border-color: var(--sl-color-primary-500);
+}
+
+/* Shoelace Card */
+sl-card::part(base) {
+  background: white;
+  border: 1px solid var(--sl-color-neutral-200);
+  border-radius: var(--sl-border-radius-small);
+  box-shadow: var(--sl-shadow-small);
+  border-left: 4px solid var(--sl-color-primary-400);
+}
+
+/* Shoelace Input */
+sl-input::part(form-control-label) {
+  color: var(--sl-color-primary-400);
+  font-weight: var(--sl-font-weight-semibold);
+  font-size: var(--sl-font-size-sm);
+  letter-spacing: var(--sl-letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+sl-input::part(input) {
+  background: var(--sl-color-neutral-50);
+  border-color: var(--sl-color-neutral-200);
+  color: var(--sl-color-neutral-800);
+}
+
+sl-input::part(input):focus {
+  border-color: var(--sl-color-primary-400);
+  box-shadow: 0 0 0 3px rgba(184, 153, 104, 0.1);
+}
+
+/* Shoelace Select */
+sl-select::part(form-control-label) {
+  color: var(--sl-color-primary-400);
+  font-weight: var(--sl-font-weight-semibold);
+  font-size: var(--sl-font-size-sm);
+  letter-spacing: var(--sl-letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+sl-select::part(control) {
+  background: var(--sl-color-neutral-50);
+  border-color: var(--sl-color-neutral-200);
+}
+
+/* Shoelace Dialog */
+sl-dialog::part(panel) {
+  background: white;
+  border-radius: var(--sl-border-radius-medium);
+  box-shadow: var(--sl-shadow-x-large);
+}
+
+sl-dialog::part(title) {
+  font-family: var(--sl-font-serif);
+  font-size: var(--sl-font-size-4xl);
+  color: var(--sl-color-neutral-800);
+}
+
+/* Shoelace Badge */
+sl-badge {
+  --background-color: var(--sl-color-primary-400);
+  --color: var(--sl-color-neutral-800);
+  font-size: var(--sl-font-size-xs);
+  font-weight: var(--sl-font-weight-semibold);
+  letter-spacing: var(--sl-letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+sl-badge[variant="success"] {
+  --background-color: var(--sl-color-success-600);
+  --color: white;
+}
+
+sl-badge[variant="warning"] {
+  --background-color: var(--sl-color-warning-600);
+  --color: var(--sl-color-neutral-800);
+}
+
+sl-badge[variant="danger"] {
+  --background-color: var(--sl-color-danger-600);
+  --color: white;
+}
+
+/* Shoelace Icon Button */
+sl-icon-button::part(base) {
+  color: var(--sl-color-primary-400);
+}
+
+sl-icon-button::part(base):hover {
+  color: var(--sl-color-primary-500);
+}
+
+/* ============================================================================
+   UTILITY CLASSES FOR ENTITIES
+   ============================================================================ */
+
+.entity-character {
+  --entity-color: var(--pl-entity-character);
+}
+
+.entity-location {
+  --entity-color: var(--pl-entity-location);
+}
+
+.entity-concept {
+  --entity-color: var(--pl-entity-concept);
+}
+
+.entity-organization {
+  --entity-color: var(--pl-entity-organization);
+}
+
+.entity-event {
+  --entity-color: var(--pl-entity-event);
+}
+
+.entity-custom {
+  --entity-color: var(--pl-entity-custom);
+}
+
+.entity-badge {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--entity-color);
+  margin-right: 8px;
+}

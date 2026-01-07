@@ -4,52 +4,75 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Palimpsest</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Shoelace -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@shoelace-style/shoelace@2.12.0/cdn/themes/light.css" />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"></script>
+    
+    <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- Palimpsest Theme -->
+    <link rel="stylesheet" href="~/Themes/manuscript-archive/theme.css" />
+    
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
             padding: 0;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: var(--sl-spacing-xl);
         }
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--sl-color-primary-600) 0%, var(--sl-color-primary-700) 100%);
             color: white;
-            padding: 20px 0;
-            margin-bottom: 30px;
+            padding: var(--sl-spacing-xl) 0;
+            margin-bottom: var(--sl-spacing-2xl);
+            box-shadow: var(--sl-shadow-large);
         }
         header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: var(--sl-font-size-6xl);
+            font-family: var(--sl-font-serif);
+            letter-spacing: var(--sl-letter-spacing-tight);
         }
         header p {
-            margin: 5px 0 0 0;
-            opacity: 0.9;
+            margin: var(--sl-spacing-xs) 0 0 0;
+            opacity: 0.95;
+            font-size: var(--sl-font-size-lg);
+            font-weight: var(--sl-font-weight-light);
         }
         .nav-links {
-            margin-top: 15px;
+            margin-top: var(--sl-spacing-lg);
         }
         .nav-links a {
             color: white;
             text-decoration: none;
-            margin-right: 20px;
+            margin-right: var(--sl-spacing-xl);
             opacity: 0.9;
+            font-weight: var(--sl-font-weight-semibold);
+            font-size: var(--sl-font-size-sm);
+            text-transform: uppercase;
+            letter-spacing: var(--sl-letter-spacing-wide);
+            transition: opacity var(--sl-transition-fast);
         }
         .nav-links a:hover {
             opacity: 1;
             text-decoration: underline;
         }
         .universe-selector {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: var(--sl-spacing-md);
+            border-radius: var(--sl-border-radius-medium);
+            margin-top: var(--sl-spacing-md);
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
