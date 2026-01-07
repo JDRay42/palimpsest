@@ -144,18 +144,16 @@ public class EntitiesController : Controller
                                        !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                     .ToList();
                 
-                foreach (var aliasName in aliasNames)
+                var aliasesToCreate = aliasNames.Select(aliasName => new EntityAlias
                 {
-                    var alias = new EntityAlias
-                    {
-                        AliasId = Guid.NewGuid(),
-                        EntityId = entity.EntityId,
-                        Alias = aliasName,
-                        AliasNorm = aliasName.ToLowerInvariant(),
-                        CreatedAt = DateTime.UtcNow
-                    };
-                    await _entityAliasRepository.CreateAsync(alias);
-                }
+                    AliasId = Guid.NewGuid(),
+                    EntityId = entity.EntityId,
+                    Alias = aliasName,
+                    AliasNorm = aliasName.ToLowerInvariant(),
+                    CreatedAt = DateTime.UtcNow
+                });
+                
+                await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
             }
 
             TempData["SuccessMessage"] = $"Entity '{entity.CanonicalName}' created successfully.";
@@ -277,18 +275,16 @@ public class EntitiesController : Controller
                                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
             
-            foreach (var aliasName in aliasesToAdd)
+            var newAliasesToCreate = aliasesToAdd.Select(aliasName => new EntityAlias
             {
-                var alias = new EntityAlias
-                {
-                    AliasId = Guid.NewGuid(),
-                    EntityId = entity.EntityId,
-                    Alias = aliasName,
-                    AliasNorm = aliasName.ToLowerInvariant(),
-                    CreatedAt = DateTime.UtcNow
-                };
-                await _entityAliasRepository.CreateAsync(alias);
-            }
+                AliasId = Guid.NewGuid(),
+                EntityId = entity.EntityId,
+                Alias = aliasName,
+                AliasNorm = aliasName.ToLowerInvariant(),
+                CreatedAt = DateTime.UtcNow
+            });
+            
+            await Task.WhenAll(newAliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
 
             TempData["SuccessMessage"] = $"Entity '{entity.CanonicalName}' updated successfully.";
             return RedirectToAction(nameof(Details), new { id = entity.EntityId });
@@ -454,18 +450,16 @@ public class EntitiesController : Controller
                                                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                                 .ToList();
                             
-                            foreach (var aliasName in validAliases)
+                            var aliasesToCreate = validAliases.Select(aliasName => new EntityAlias
                             {
-                                var alias = new EntityAlias
-                                {
-                                    AliasId = Guid.NewGuid(),
-                                    EntityId = entity.EntityId,
-                                    Alias = aliasName,
-                                    AliasNorm = aliasName.ToLowerInvariant(),
-                                    CreatedAt = DateTime.UtcNow
-                                };
-                                await _entityAliasRepository.CreateAsync(alias);
-                            }
+                                AliasId = Guid.NewGuid(),
+                                EntityId = entity.EntityId,
+                                Alias = aliasName,
+                                AliasNorm = aliasName.ToLowerInvariant(),
+                                CreatedAt = DateTime.UtcNow
+                            });
+                            
+                            await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
                         }
 
                         imported++;
@@ -532,18 +526,16 @@ public class EntitiesController : Controller
                                            !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                         .ToList();
                     
-                    foreach (var aliasName in validAliases)
+                    var aliasesToCreate = validAliases.Select(aliasName => new EntityAlias
                     {
-                        var alias = new EntityAlias
-                        {
-                            AliasId = Guid.NewGuid(),
-                            EntityId = entity.EntityId,
-                            Alias = aliasName,
-                            AliasNorm = aliasName.ToLowerInvariant(),
-                            CreatedAt = DateTime.UtcNow
-                        };
-                        await _entityAliasRepository.CreateAsync(alias);
-                    }
+                        AliasId = Guid.NewGuid(),
+                        EntityId = entity.EntityId,
+                        Alias = aliasName,
+                        AliasNorm = aliasName.ToLowerInvariant(),
+                        CreatedAt = DateTime.UtcNow
+                    });
+                    
+                    await Task.WhenAll(aliasesToCreate.Select(alias => _entityAliasRepository.CreateAsync(alias)));
 
                     imported++;
                 }
