@@ -144,16 +144,17 @@ public class EntitiesController : Controller
                                        !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                     .ToList();
                 
-                foreach (var aliasName in aliasNames)
+                var aliasesToCreate = aliasNames.Select(aliasName => new EntityAlias
                 {
-                    var alias = new EntityAlias
-                    {
-                        AliasId = Guid.NewGuid(),
-                        EntityId = entity.EntityId,
-                        Alias = aliasName,
-                        AliasNorm = aliasName.ToLowerInvariant(),
-                        CreatedAt = DateTime.UtcNow
-                    };
+                    AliasId = Guid.NewGuid(),
+                    EntityId = entity.EntityId,
+                    Alias = aliasName,
+                    AliasNorm = aliasName.ToLowerInvariant(),
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
+                
+                foreach (var alias in aliasesToCreate)
+                {
                     await _entityAliasRepository.CreateAsync(alias);
                 }
             }
@@ -277,16 +278,17 @@ public class EntitiesController : Controller
                                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
             
-            foreach (var aliasName in aliasesToAdd)
+            var newAliasesToCreate = aliasesToAdd.Select(aliasName => new EntityAlias
             {
-                var alias = new EntityAlias
-                {
-                    AliasId = Guid.NewGuid(),
-                    EntityId = entity.EntityId,
-                    Alias = aliasName,
-                    AliasNorm = aliasName.ToLowerInvariant(),
-                    CreatedAt = DateTime.UtcNow
-                };
+                AliasId = Guid.NewGuid(),
+                EntityId = entity.EntityId,
+                Alias = aliasName,
+                AliasNorm = aliasName.ToLowerInvariant(),
+                CreatedAt = DateTime.UtcNow
+            }).ToList();
+            
+            foreach (var alias in newAliasesToCreate)
+            {
                 await _entityAliasRepository.CreateAsync(alias);
             }
 
@@ -454,16 +456,17 @@ public class EntitiesController : Controller
                                                    !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                                 .ToList();
                             
-                            foreach (var aliasName in validAliases)
+                            var aliasesToCreate = validAliases.Select(aliasName => new EntityAlias
                             {
-                                var alias = new EntityAlias
-                                {
-                                    AliasId = Guid.NewGuid(),
-                                    EntityId = entity.EntityId,
-                                    Alias = aliasName,
-                                    AliasNorm = aliasName.ToLowerInvariant(),
-                                    CreatedAt = DateTime.UtcNow
-                                };
+                                AliasId = Guid.NewGuid(),
+                                EntityId = entity.EntityId,
+                                Alias = aliasName,
+                                AliasNorm = aliasName.ToLowerInvariant(),
+                                CreatedAt = DateTime.UtcNow
+                            }).ToList();
+                            
+                            foreach (var alias in aliasesToCreate)
+                            {
                                 await _entityAliasRepository.CreateAsync(alias);
                             }
                         }
@@ -532,16 +535,17 @@ public class EntitiesController : Controller
                                            !aliasName.Equals(entity.CanonicalName, StringComparison.OrdinalIgnoreCase))
                         .ToList();
                     
-                    foreach (var aliasName in validAliases)
+                    var aliasesToCreate = validAliases.Select(aliasName => new EntityAlias
                     {
-                        var alias = new EntityAlias
-                        {
-                            AliasId = Guid.NewGuid(),
-                            EntityId = entity.EntityId,
-                            Alias = aliasName,
-                            AliasNorm = aliasName.ToLowerInvariant(),
-                            CreatedAt = DateTime.UtcNow
-                        };
+                        AliasId = Guid.NewGuid(),
+                        EntityId = entity.EntityId,
+                        Alias = aliasName,
+                        AliasNorm = aliasName.ToLowerInvariant(),
+                        CreatedAt = DateTime.UtcNow
+                    }).ToList();
+                    
+                    foreach (var alias in aliasesToCreate)
+                    {
                         await _entityAliasRepository.CreateAsync(alias);
                     }
 
