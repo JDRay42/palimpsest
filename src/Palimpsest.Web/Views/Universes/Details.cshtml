@@ -78,7 +78,7 @@
             <h3>Quick Actions</h3>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <sl-button href="/documents/create?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
+                <sl-button href="/documents/upload?universeId=@Model.UniverseId" variant="default" outline style="width: 100%;">
                     <sl-icon slot="prefix" name="file-earmark-plus"></sl-icon>
                     Add Document
                 </sl-button>
@@ -104,7 +104,7 @@
     <sl-tab-panel name="documents">
         <div style="padding: 20px;">
             <p>Documents for this universe will be displayed here.</p>
-            <sl-button href="/documents/create?universeId=@Model.UniverseId" variant="primary">
+            <sl-button href="/documents/upload?universeId=@Model.UniverseId" variant="primary">
                 <sl-icon slot="prefix" name="file-earmark-plus"></sl-icon>
                 Add Document
             </sl-button>

@@ -1,6 +1,9 @@
+[!NOTE]
+This project is rooted in an idea for experimenting with AI memory structures. It is almost entirely "vibe coded" (though I dislike that term). On the surface, it is an app for authors to manage fictional universes, but underneath it is an exploration of knowledge representation, epistemology, and human-AI collaboration. Or so that's my intent.
+
 # Palimpsest
 
-A canon-aware knowledge engine for authors managing large fictional universes across many books and timelines.
+A canon-aware knowledge engine for authors managing large fictional universes across many books and timelines. Track every character, event, and assertion with full provenance. Never lose track of what your characters know, when they learned it, or which version of your manuscript said it first.
 
 ## Overview
 

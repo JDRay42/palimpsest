@@ -56,9 +56,16 @@ public class DocumentsController : Controller
     /// <summary>
     /// Displays the form for uploading a new document.
     /// </summary>
+    /// <param name="universeId">Optional universe ID to set as active context.</param>
     /// <returns>The view for uploading a document.</returns>
-    public IActionResult Upload()
+    public IActionResult Upload(Guid? universeId = null)
     {
+        // If universeId is provided in query string, set it as active
+        if (universeId.HasValue)
+        {
+            _universeContext.SetActiveUniverseId(universeId.Value);
+        }
+        
         var activeUniverseId = _universeContext.GetActiveUniverseId();
         if (activeUniverseId == null)
         {
